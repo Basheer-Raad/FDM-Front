@@ -2,6 +2,7 @@
 import { ref, computed, onMounted } from "vue";
 import { Plus, Search, ChevronLeft, ChevronRight } from "lucide-vue-next";
 import CreateEditDialog from "./CreateEditDialog.vue";
+import { apiService } from "@/app/service/httpService/apiService";
 
 interface Todo {
   id: number;
@@ -73,9 +74,7 @@ const paginatedData = computed(() => {
 
 const fetchTodos = async () => {
   try {
-    const response = await fetch("http://127.0.0.1:8000/api/tasks");
-    const data = await response.json();
-    console.log("data:", data);
+    const data = await apiService.get<Todo[]>('/tasks');
     todoList.value = data;
   } catch (error) {
     console.error("Error fetching todos:", error);

@@ -2,6 +2,7 @@
 import { ref, computed, onMounted } from "vue";
 import { Plus, Search, ChevronLeft, ChevronRight } from "lucide-vue-next";
 import CreateEditDialog from "./CreateEditDialog.vue";
+import { apiService } from "@/app/service/httpService/apiService";
 
 interface User {
   id: number;
@@ -16,6 +17,7 @@ const userList = ref<User[]>([]);
 const searchQuery = ref("");
 const addUserModal = ref(false);
 const page = ref(1);
+const loading = ref(false);
 
 const tableHeader = [
   { label: "ID", value: "id", align: "left" },
@@ -78,12 +80,45 @@ const paginatedData = computed(() => {
 });
 
 const fetchUsers = async () => {
+  loading.value = true;
   try {
-    const response = await fetch("http://127.0.0.1:8000/api/users");
-    const data = await response.json();
+    const data = await apiService.get<User[]>('/users');
     userList.value = data;
   } catch (error) {
     console.error("Error fetching users:", error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const createUser = async (user: User) => {
+  try {
+    const newUser = await apiService.post<User>('/users', user);
+    userList.value.unshift(newUser);
+    addUserModal.value = false;
+  } catch (error) {
+    console.error("Error creating user:", error);
+  }
+};
+
+const updateUser = async (user: User) => {
+  try {
+    const updatedUser = await apiService.put<User>(`/users/${user.id}`, user);
+    const index = userList.value.findIndex(u => u.id === user.id);
+    if (index !== -1) {
+      userList.value[index] = updatedUser;
+    }
+  } catch (error) {
+    console.error("Error updating user:", error);
+  }
+};
+
+const deleteUser = async (id: number) => {
+  try {
+    await apiService.delete(`/users/${id}`);
+    userList.value = userList.value.filter(user => user.id !== id);
+  } catch (error) {
+    console.error("Error deleting user:", error);
   }
 };
 
@@ -129,7 +164,12 @@ const handleCreateModal = () => {
       </div>
     </div>
 
-    <div class="overflow-x-auto">
+    <div v-if="loading" class="text-center py-4">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+      <p class="mt-2 text-slate-500">Loading employees...</p>
+    </div>
+
+    <div v-else class="overflow-x-auto">
       <table class="w-full whitespace-nowrap">
         <thead class="ltr:text-left rtl:text-right">
           <tr class="bg-slate-100 dark:bg-zink-600">
@@ -139,6 +179,9 @@ const handleCreateModal = () => {
               class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500"
             >
               {{ item.label }}
+            </th>
+            <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500">
+              Actions
             </th>
           </tr>
         </thead>
@@ -150,10 +193,20 @@ const handleCreateModal = () => {
           >
             <td class="px-3.5 py-2.5">{{ item.id }}</td>
             <td class="px-3.5 py-2.5">
-              {{ item.name }}
+              {{ `${item.name}` }}
             </td>
             <td class="px-3.5 py-2.5">{{ item.email }}</td>
             <td class="px-3.5 py-2.5">{{ item.created_at }}</td>
+            <td class="px-3.5 py-2.5">
+              <div class="flex gap-2">
+                <button
+                  @click="deleteUser(item.id)"
+                  class="text-red-500 hover:text-red-700"
+                >
+                  Delete
+                </button>
+              </div>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -201,5 +254,9 @@ const handleCreateModal = () => {
       </div>
     </div>
   </TCard>
-  <CreateEditDialog v-model="addUserModal" />
+  <CreateEditDialog 
+    v-model="addUserModal" 
+    :user="event"
+    @save="createUser"
+  />
 </template>
