@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref, onMounted } from "vue";
+import { computed, ref, onMounted, watch } from "vue";
 import { X } from "lucide-vue-next";
 import { apiService } from "@/app/service/httpService/apiService";
 
@@ -29,7 +29,20 @@ const showModal = computed({
   },
 });
 
-const todoData = ref({ ...props.event, customers: props.event.customer || null });
+const todoData = ref({ ...props.event, customers: props.event.customers || null });
+
+watch(
+  () => props.event,
+  (newVal) => {
+    // If customers is an id, map to full object from customerList
+    let customerObj = newVal.customers;
+    if (typeof customerObj === 'number' || typeof customerObj === 'string') {
+      customerObj = customerList.value.find(c => c.id == customerObj) || null;
+    }
+    todoData.value = { ...newVal, customers: customerObj };
+  },
+  { immediate: true }
+);
 
 const statusOptions = [
   { label: "Pending", value: "pending" },
@@ -66,13 +79,20 @@ onMounted(() => {
 
 const handleSubmit = async (data: any) => {
   try {
-    await apiService.post("/tasks", data); // Adjust the endpoint as needed
-    // Optionally emit an event or close the modal here
-    emit("update:modelValue", false); // Close modal
-    // Optionally, emit a refresh event or show a success message
+    if (props.dataEdit) {
+      // Edit existing task
+      await apiService.put(`/tasks/${props.event.id}`, data);
+    } else {
+      // Create new task
+      await apiService.post("/tasks", data);
+    }
+    
+    // Close modal and emit success event
+    emit("update:modelValue", false);
+    emit("handleSubmit", { success: true, action: props.dataEdit ? 'edit' : 'create' });
   } catch (error) {
-    // Handle error (show notification, etc.)
-    console.error("Error creating todo:", error);
+    console.error(`Error ${props.dataEdit ? 'updating' : 'creating'} todo:`, error);
+    emit("handleSubmit", { success: false, error });
   }
 };
 </script>
@@ -93,7 +113,7 @@ const handleSubmit = async (data: any) => {
       </div>
       <div class="max-h-[calc(theme('height.screen')_-_180px)] p-4 overflow-y-auto">
         <form
-          @submit.prevent="handleSubmit(todoData)"
+         
           class="create-form"
           id="create-form"
         >

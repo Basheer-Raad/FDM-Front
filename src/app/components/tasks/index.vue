@@ -3,6 +3,7 @@ import { ref, computed, onMounted } from "vue";
 import { Plus, Search, ChevronLeft, ChevronRight } from "lucide-vue-next";
 import CreateEditDialog from "./CreateEditDialog.vue";
 import { apiService } from "@/app/service/httpService/apiService";
+import { Pencil } from "lucide-vue-next";
 
 interface Todo {
   id: number;
@@ -99,6 +100,19 @@ const handleCreateModal = () => {
     status: "pending",
     customers: []
   };
+  dataEdit.value = false;
+  addTodoModal.value = true;
+};
+
+const handleEditModal = (task) => {
+  event.value = {
+    id: task.id,
+    todo: task.todo,
+    status: task.status,
+    user_id: task.user_id || task.userId,
+    customers: task.customers?.id || task.customers,
+  };
+  dataEdit.value = true;
   addTodoModal.value = true;
 };
 </script>
@@ -139,6 +153,7 @@ const handleCreateModal = () => {
             >
               {{ item.label }}
             </th>
+            <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 text-center">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -173,6 +188,11 @@ const handleCreateModal = () => {
               <template v-else>
                 {{ item[header.value] }}
               </template>
+            </td>
+            <td class="px-3.5 py-2.5 text-center">
+              <button @click="handleEditModal(item)" class="text-blue-500 hover:text-blue-700">
+                <Pencil class="inline-block size-4" />
+              </button>
             </td>
           </tr>
         </tbody>
@@ -221,5 +241,10 @@ const handleCreateModal = () => {
       </div>
     </div>
   </TCard>
-  <CreateEditDialog v-model="addTodoModal" />
+  <CreateEditDialog
+    v-model="addTodoModal"
+    :data-edit="dataEdit"
+    :event="event"
+    @handle-submit="handleTaskSubmit"
+  />
 </template>
