@@ -180,9 +180,6 @@ const handleCreateModal = () => {
             >
               {{ item.label }}
             </th>
-            <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500">
-              Actions
-            </th>
           </tr>
         </thead>
         <tbody>
@@ -197,16 +194,6 @@ const handleCreateModal = () => {
             </td>
             <td class="px-3.5 py-2.5">{{ item.email }}</td>
             <td class="px-3.5 py-2.5">{{ item.created_at }}</td>
-            <td class="px-3.5 py-2.5">
-              <div class="flex gap-2">
-                <button
-                  @click="deleteUser(item.id)"
-                  class="text-red-500 hover:text-red-700"
-                >
-                  Delete
-                </button>
-              </div>
-            </td>
           </tr>
         </tbody>
       </table>
