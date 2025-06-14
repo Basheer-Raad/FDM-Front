@@ -9,6 +9,8 @@ interface Todo {
   todo: string;
   completed: boolean;
   userId: number;
+  status: string;
+  customers: any;
 }
 
 const todoList = ref<Todo[]>([]);
@@ -19,7 +21,8 @@ const page = ref(1);
 const tableHeader = [
   { label: "ID", value: "id", align: "left" },
   { label: "Todo", value: "todo", align: "left" },
-  { label: "Status", value: "completed", align: "left" },
+  { label: "Customer", value: "customer", align: "left" },
+  { label: "Status", value: "status", align: "left" },
   { label: "User ID", value: "user_id", align: "left" },
 ];
 
@@ -38,6 +41,8 @@ const event = ref({
   todo: "",
   completed: false,
   userId: 0,
+  status: "pending",
+  customers: []
 });
 
 // Computed property for filtered and displayed lists
@@ -91,6 +96,8 @@ const handleCreateModal = () => {
     todo: "",
     completed: false,
     userId: 1,
+    status: "pending",
+    customers: []
   };
   addTodoModal.value = true;
 };
@@ -145,17 +152,23 @@ const handleCreateModal = () => {
               :key="'basic-table-tr-' + index"
               class="px-3.5 py-2.5"
             >
-              <template v-if="header.value === 'completed'">
+              <template v-if="header.value === 'status'">
                 <span
                   :class="[
                     'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
-                    item[header.value]
+                    item[header.value] === 'completed'
                       ? 'bg-green-100 text-green-800 dark:bg-green-500/20 dark:text-green-400'
+                      : item[header.value] === 'in_progress'
+                      ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-500/20 dark:text-yellow-400'
                       : 'bg-red-100 text-red-800 dark:bg-red-500/20 dark:text-red-400',
                   ]"
                 >
-                  {{ item[header.value] ? "Completed" : "Pending" }}
+                  {{ item[header.value] === 'completed' ? 'Completed' : 
+                     item[header.value] === 'in_progress' ? 'In Progress' : 'Pending' }}
                 </span>
+              </template>
+              <template v-else-if="header.value === 'customer'">
+                {{ item.customers?.customerName || '-' }}
               </template>
               <template v-else>
                 {{ item[header.value] }}
