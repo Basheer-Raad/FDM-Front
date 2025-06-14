@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed, onMounted } from "vue";
 import { Plus, Search, ChevronLeft, ChevronRight } from "lucide-vue-next";
+import { apiService } from "@/app/service/httpService/apiService";
 
 interface User {
   id: number;
@@ -15,12 +16,16 @@ const userList = ref<User[]>([]);
 const searchQuery = ref("");
 const addUserModal = ref(false);
 const page = ref(1);
+const loading = ref(false);
 
 const tableHeader = [
   { label: "ID", value: "id", align: "left" },
-  { label: "Name", value: "name", align: "left" },
-  { label: "Email", value: "email", align: "left" },
-  { label: "Phone", value: "phone", align: "left" },
+  { label: "Customer Name", value: "customerName", align: "left" },
+  { label: "Address", value: "address", align: "left" },
+  { label: "Phone", value: "tel", align: "left" },
+  { label: "Type", value: "typeDesc", align: "left" },
+  { label: "Zone", value: "zoneName", align: "left" },
+  { label: "EDC", value: "edcName", align: "left" },
 ];
 
 const tableConfig = {
@@ -74,12 +79,24 @@ const paginatedData = computed(() => {
 });
 
 const fetchUsers = async () => {
+  loading.value = true;
   try {
-    const response = await fetch("https://dummyjson.com/users");
-    const data = await response.json();
-    userList.value = data.users;
+    const response = await apiService.get('/getCustomers');
+    // If your API returns { code: 200, data: [...] }
+    const data = Array.isArray(response.data) ? response.data : response.data?.data || [];
+    userList.value = data.map(item => ({
+      id: item.id,
+      customerName: item.customerName,
+      address: item.address,
+      tel: item.tel,
+      typeDesc: item.typeDesc,
+      zoneName: item.zoneName,
+      edcName: item.edcName,
+    }));
   } catch (error) {
-    console.error("Error fetching users:", error);
+    console.error("Error fetching customers:", error);
+  } finally {
+    loading.value = false;
   }
 };
 
@@ -113,7 +130,12 @@ onMounted(() => {
       </div>
     </div>
 
-    <div class="overflow-x-auto">
+    <div v-if="loading" class="text-center py-4">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+      <p class="mt-2 text-slate-500">Loading customers...</p>
+    </div>
+
+    <div v-else class="overflow-x-auto">
       <table class="w-full whitespace-nowrap">
         <thead class="ltr:text-left rtl:text-right">
           <tr class="bg-slate-100 dark:bg-zink-600">
@@ -133,9 +155,12 @@ onMounted(() => {
             class="border-y border-slate-200 dark:border-zink-500"
           >
             <td class="px-3.5 py-2.5">{{ item.id }}</td>
-            <td class="px-3.5 py-2.5">{{ item.firstName }} {{ item.lastName }}</td>
-            <td class="px-3.5 py-2.5">{{ item.email }}</td>
-            <td class="px-3.5 py-2.5">{{ item.phone }}</td>
+            <td class="px-3.5 py-2.5">{{ item.customerName }}</td>
+            <td class="px-3.5 py-2.5">{{ item.address || '-' }}</td>
+            <td class="px-3.5 py-2.5">{{ item.tel }}</td>
+            <td class="px-3.5 py-2.5">{{ item.typeDesc }}</td>
+            <td class="px-3.5 py-2.5">{{ item.zoneName }}</td>
+            <td class="px-3.5 py-2.5">{{ item.edcName }}</td>
           </tr>
         </tbody>
       </table>
