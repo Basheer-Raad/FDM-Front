@@ -1,7 +1,9 @@
 {
+  "t-admin-tasks": "Admin Tasks",
+  "t-technician-tasks": "Technician Tasks",
   "t-meters": "Meters",
   "t-welcome": "Welcome",
-  "t-tasks": "Tasks",
+  "t-tasks": "Tasks Admin",
   "t-employees": "Employees",
   "t-customers": "Customers",
   "t-menu": "Menu",

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed, onMounted } from "vue";
 import { Plus, Search, ChevronLeft, ChevronRight } from "lucide-vue-next";
-import CreateEditDialog from "./CreateEditDialog.vue";
+import CreateEditDialogAdmin from "./CreateEditDialogAdmin.vue";
 import { apiService } from "@/app/service/httpService/apiService";
 import { Pencil } from "lucide-vue-next";
 
@@ -12,6 +12,11 @@ interface Todo {
   userId: number;
   status: string;
   customers: any;
+  user: {
+    id: number;
+    name: string;
+    email: string;
+  };
 }
 
 const todoList = ref<Todo[]>([]);
@@ -24,7 +29,7 @@ const tableHeader = [
   { label: "Todo", value: "todo", align: "left" },
   { label: "Customer", value: "customer", align: "left" },
   { label: "Status", value: "status", align: "left" },
-  { label: "User ID", value: "user_id", align: "left" },
+  { label: "User", value: "user", align: "left" },
 ];
 
 const tableConfig = {
@@ -43,7 +48,7 @@ const event = ref({
   completed: false,
   userId: 0,
   status: "pending",
-  customers: []
+  customer: [],
 });
 
 // Computed property for filtered and displayed lists
@@ -80,7 +85,7 @@ const paginatedData = computed(() => {
 
 const fetchTodos = async () => {
   try {
-    const data = await apiService.get<Todo[]>('/tasks');
+    const data = await apiService.get<Todo[]>("/tasks");
     todoList.value = data;
   } catch (error) {
     console.error("Error fetching todos:", error);
@@ -98,7 +103,7 @@ const handleCreateModal = () => {
     completed: false,
     userId: 1,
     status: "pending",
-    customers: []
+    customer: [],
   };
   dataEdit.value = false;
   addTodoModal.value = true;
@@ -110,10 +115,16 @@ const handleEditModal = (task) => {
     todo: task.todo,
     status: task.status,
     user_id: task.user_id || task.userId,
-    customers: task.customers?.id || task.customers,
+    customer: task.customer?.id || task.customer,
   };
   dataEdit.value = true;
   addTodoModal.value = true;
+};
+
+const handleTaskSubmit = async (result) => {
+  if (result.success) {
+    await fetchTodos();
+  }
 };
 </script>
 
@@ -153,7 +164,11 @@ const handleEditModal = (task) => {
             >
               {{ item.label }}
             </th>
-            <th class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 text-center">Actions</th>
+            <!-- <th
+              class="px-3.5 py-2.5 font-semibold border-b border-slate-200 dark:border-zink-500 text-center"
+            >
+              Actions
+            </th> -->
           </tr>
         </thead>
         <tbody>
@@ -178,22 +193,33 @@ const handleEditModal = (task) => {
                       : 'bg-red-100 text-red-800 dark:bg-red-500/20 dark:text-red-400',
                   ]"
                 >
-                  {{ item[header.value] === 'completed' ? 'Completed' : 
-                     item[header.value] === 'in_progress' ? 'In Progress' : 'Pending' }}
+                  {{
+                    item[header.value] === "completed"
+                      ? "Completed"
+                      : item[header.value] === "in_progress"
+                      ? "In Progress"
+                      : "Pending"
+                  }}
                 </span>
               </template>
               <template v-else-if="header.value === 'customer'">
-                {{ item.customers?.customerName || '-' }}
+                {{ item.customer?.customerName || "-" }}
+              </template>
+              <template v-else-if="header.value === 'user'">
+                {{ item.user?.name || "-" }}
               </template>
               <template v-else>
                 {{ item[header.value] }}
               </template>
             </td>
-            <td class="px-3.5 py-2.5 text-center">
-              <button @click="handleEditModal(item)" class="text-blue-500 hover:text-blue-700">
+            <!-- <td class="px-3.5 py-2.5 text-center">
+              <button
+                @click="handleEditModal(item)"
+                class="text-blue-500 hover:text-blue-700"
+              >
                 <Pencil class="inline-block size-4" />
               </button>
-            </td>
+            </td> -->
           </tr>
         </tbody>
       </table>
@@ -241,7 +267,7 @@ const handleEditModal = (task) => {
       </div>
     </div>
   </TCard>
-  <CreateEditDialog
+  <CreateEditDialogAdmin
     v-model="addTodoModal"
     :data-edit="dataEdit"
     :event="event"

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import Tasks from "@/app/components/tasks/index.vue";
+import Tasks from "@/app/components/tasks/TasksAdmin.vue";
 </script>
 <template>
   <div>

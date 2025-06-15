@@ -34,8 +34,13 @@ export const menuItems: MenuItemType[] = [
   },
   {
     icon: Table,
-    title: "tasks",
-    path: "/tasks",
+    title: "admin-tasks",
+    path: "/admin-tasks",
+  },
+  {
+    icon: Table,
+    title: "technician-tasks",
+    path: "/technician-tasks",
   },
   {
     icon: Users,

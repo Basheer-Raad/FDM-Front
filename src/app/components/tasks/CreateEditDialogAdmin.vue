@@ -16,7 +16,7 @@ const props = defineProps({
   },
   event: {
     type: Object,
-    default: () => ({  todo: "", status: "pending", user_id: "", customers: null }),
+    default: () => ({  todo: "", status: "pending", user_id: "", customer: null }),
   },
 });
 
@@ -29,17 +29,17 @@ const showModal = computed({
   },
 });
 
-const todoData = ref({ ...props.event, customers: props.event.customers || null });
+const todoData = ref({ ...props.event, customer: props.event.customer || null });
 
 watch(
   () => props.event,
   (newVal) => {
     // If customers is an id, map to full object from customerList
-    let customerObj = newVal.customers;
+    let customerObj = newVal.customer;
     if (typeof customerObj === 'number' || typeof customerObj === 'string') {
       customerObj = customerList.value.find(c => c.id == customerObj) || null;
     }
-    todoData.value = { ...newVal, customers: customerObj };
+    todoData.value = { ...newVal, customer: customerObj };
   },
   { immediate: true }
 );
@@ -50,8 +50,34 @@ const statusOptions = [
   { label: "Completed", value: "completed" },
 ];
 
+const serviceOptions = [
+  { value: "replace_display", label: "Replace Display" },
+  { value: "fix_power_issue", label: "Fix Power Issue" },
+  { value: "reset_connection", label: "Reset Connection" },
+  { value: "calibration_check", label: "Calibration Check" },
+  { value: "replace_battery", label: "Replace Battery" },
+  { value: "software_update", label: "Software Update" },
+  { value: "change_location", label: "Change Location" }
+];
+
 const userList = ref<{ id: number; name: string }[]>([]);
 const customerList = ref<any[]>([]);
+
+const meterOptions = computed(() => {
+  if (!todoData.value.customer || todoData.value.todo !== 'repair_meter') {
+    return [];
+  }
+  console.log(todoData.value.customer.infoMeterList);
+  return todoData.value.customer.infoMeterList || [];
+});
+
+const isMeterEnabled = computed(() => {
+  return todoData.value.todo === 'repair_meter';
+});
+
+const isServiceEnabled = computed(() => {
+  return todoData.value.todo === 'repair_meter';
+});
 
 const fetchUsers = async () => {
   try {
@@ -79,12 +105,18 @@ onMounted(() => {
 
 const handleSubmit = async (data: any) => {
   try {
+    // Prepare the data
+    const submitData = {
+      ...data,
+      meters: data.todo === 'install_meter' ? [] : data.meters
+    };
+
     if (props.dataEdit) {
       // Edit existing task
-      await apiService.put(`/tasks/${props.event.id}`, data);
+      await apiService.put(`/tasks/${props.event.id}`, submitData);
     } else {
       // Create new task
-      await apiService.post("/tasks", data);
+      await apiService.post("/tasks", submitData);
     }
     
     // Close modal and emit success event
@@ -113,20 +145,31 @@ const handleSubmit = async (data: any) => {
       </div>
       <div class="max-h-[calc(theme('height.screen')_-_180px)] p-4 overflow-y-auto">
         <form
-         
+          @submit.prevent
           class="create-form"
           id="create-form"
         >
           <div class="grid grid-cols-1 gap-4 xl:grid-cols-12">
            
             <div class="xl:col-span-12">
-              <TInputField
-                label="Todo"
-                placeholder="Enter todo"
+              <label class="inline-block mb-2 text-base font-medium">Todo</label>
+              <select
                 v-model="todoData.todo"
-                hide-details
                 required
-              />
+                class="form-select border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 dark:bg-zink-700 dark:text-zink-100"
+              >
+                <option value="install_meter">Install Meter</option>
+                <option value="repair_meter">Repair Meter</option>
+              </select>
+            </div>
+            <div class="xl:col-span-12">
+              <label class="block mb-2 text-base font-medium">Description (Optional)</label>
+              <textarea
+                v-model="todoData.description"
+                class="block w-full form-textarea border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 dark:bg-zink-700 dark:text-zink-100 mb-2"
+                rows="3"
+                placeholder="Enter task description..."
+              ></textarea>
             </div>
             <div class="xl:col-span-12">
               <label class="inline-block mb-2 text-base font-medium">Status</label>
@@ -155,12 +198,37 @@ const handleSubmit = async (data: any) => {
             <div class="xl:col-span-12">
               <label class="inline-block mb-2 text-base font-medium">Customer</label>
               <select
-                v-model="todoData.customers"
+                v-model="todoData.customer"
                 required
                 class="form-select border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 dark:bg-zink-700 dark:text-zink-100"
               >
                 <option v-for="customer in customerList" :key="customer.id" :value="customer">
                   {{ customer.customerName }}
+                </option>
+              </select>
+            </div>
+            <div class="xl:col-span-12">
+              <label class="inline-block mb-2 text-base font-medium">Meter</label>
+              <select
+                v-model="todoData.meters"
+                :disabled="!isMeterEnabled"
+                class="form-select border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 dark:bg-zink-700 dark:text-zink-100"
+                :class="{ 'bg-gray-100': !isMeterEnabled }"
+              >
+                <option v-for="meter in meterOptions" :key="meter.id" :value="meter">
+                  {{ meter.meterNo }}
+                </option>
+              </select>
+            </div>
+            <div class="xl:col-span-12" v-if="isServiceEnabled">
+              <label class="inline-block mb-2 text-base font-medium">Service</label>
+              <select
+                v-model="todoData.service"
+                required
+                class="form-select border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 dark:bg-zink-700 dark:text-zink-100"
+              >
+                <option v-for="service in serviceOptions" :key="service.value" :value="service.value">
+                  {{ service.label }}
                 </option>
               </select>
             </div>
@@ -174,7 +242,7 @@ const handleSubmit = async (data: any) => {
             >
               Cancel
             </TButton>
-            <TButton type="submit" @click="handleSubmit(todoData)">
+            <TButton type="button" @click.prevent="handleSubmit(todoData)">
               {{ props.dataEdit ? "Save" : "Create Todo" }}
             </TButton>
           </div>

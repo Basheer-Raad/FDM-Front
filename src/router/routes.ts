@@ -1631,12 +1631,22 @@ export const routes = [
     }
   },
   {
-    path: "/tasks",
-    name: "Tasks",
-    component: () => import("@/views/Tasks.vue"),
+    path: "/admin-tasks",
+    name: "AdminTasks",
+    component: () => import("@/views/TasksAdmin.vue"),
     meta: {
-      title: "Tasks",
+      title: "Admin Tasks",
       authRequired: true,
+      layout: DefaultLayout
+    }
+  },
+  {
+    path: "/technician-tasks",
+    name: "TechnicianTasks",
+    component: () => import("@/views/TasksTechnician.vue"),
+    meta: {
+      title: "Technician Tasks",
+      authRequired: true, 
       layout: DefaultLayout
     }
   },

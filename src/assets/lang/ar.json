@@ -1,6 +1,7 @@
 {
   "t-welcome": "الرئيسية",
-  "t-tasks": "المهام",
+  "t-admin-tasks": "المهام الإدارية",
+  "t-technician-tasks": "المهام الفنية",
   "t-employees": "الموظفين",
   "t-customers": "العملاء",
   "t-meters": "العدادات",
