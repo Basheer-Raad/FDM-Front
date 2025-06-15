@@ -43,6 +43,8 @@ const todoData = ref({
   service: props.event.service || "",
 });
 
+const selectedFile = ref<File | null>(null);
+
 watch(
   () => props.event,
   (newVal) => {
@@ -50,7 +52,11 @@ watch(
     if (typeof customerObj === "number" || typeof customerObj === "string") {
       customerObj = customerList.value.find((c) => c.id == customerObj) || null;
     }
-    todoData.value = { ...newVal, customer: customerObj, service: newVal.service || "" };
+    todoData.value = {
+      ...newVal,
+      customer: customerObj,
+      service: newVal.service || "",
+    };
   },
   { immediate: true }
 );
@@ -75,12 +81,34 @@ const userList = ref<{ id: number; name: string }[]>([]);
 const customerList = ref<any[]>([]);
 
 const meterOptions = computed(() => {
+  if (todoData.value.todo === "install_meter") {
+    // For install_meter, fetch from API (handled below)
+    return meterInstallOptions.value;
+  }
   if (!todoData.value.customer || todoData.value.todo !== "repair_meter") {
     return [];
   }
-  console.log(todoData.value.customer.infoMeterList);
   return todoData.value.customer.infoMeterList || [];
 });
+
+const meterInstallOptions = ref<any[]>([]);
+
+watch(
+  () => todoData.value.todo,
+  async (newVal) => {
+    if (newVal === "install_meter") {
+      try {
+        const response = await apiService.get("meter/findNoInstallPage");
+        console.log("Install meter API response:", response.data.content);
+        meterInstallOptions.value = response.data.content || [];
+      } catch (error) {
+        console.error("Error fetching install meter options:", error);
+        meterInstallOptions.value = [];
+      }
+    }
+  },
+  { immediate: true }
+);
 
 const isMeterEnabled = computed(() => {
   return todoData.value.todo === "repair_meter";
@@ -117,15 +145,13 @@ onMounted(() => {
 });
 
 const handleSubmit = async (data: any) => {
-  // log the selected service
-  console.log("Selected service:", data.service);
   try {
     const submitData = {
       ...data,
       meters: data.todo === "install_meter" ? [] : data.meters,
-      service: data.service,
+      media: selectedFile.value,
     };
-    console.log("Submitting data:", submitData);
+    console.log(submitData);
 
     if (props.dataEdit) {
       // Edit existing task
@@ -133,7 +159,6 @@ const handleSubmit = async (data: any) => {
     } else {
       // Create new task
       await apiService.post("/tasks", submitData);
-      console.log("Created task:", submitData);
     }
 
     // Close modal and emit success event
@@ -148,6 +173,18 @@ const handleSubmit = async (data: any) => {
       error
     );
     emit("handleSubmit", { success: false, error });
+  }
+};
+
+const handleFileChange = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  if (target.files && target.files.length > 0) {
+    selectedFile.value = target.files[0];
+    // Log available file info
+    console.log("File name:", selectedFile.value.name);
+    console.log("File type:", selectedFile.value.type);
+    console.log("File size:", selectedFile.value.size);
+    console.log("webkitRelativePath:", selectedFile.value.webkitRelativePath); // usually empty
   }
 };
 </script>
@@ -252,9 +289,7 @@ const handleSubmit = async (data: any) => {
               >
               <select
                 v-model="todoData.meters"
-                :disabled="!isMeterEnabled"
                 class="form-select border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 dark:bg-zink-700 dark:text-zink-100"
-                :class="{ 'bg-gray-100': !isMeterEnabled }"
               >
                 <option
                   v-for="meter in meterOptions"
@@ -282,6 +317,12 @@ const handleSubmit = async (data: any) => {
                   {{ service.label }}
                 </option>
               </select>
+            </div>
+            <div class="xl:col-span-12">
+              <label class="inline-block mb-2 text-base font-medium"
+                >Media</label
+              >
+              <input type="file" @change="handleFileChange" />
             </div>
           </div>
           <div class="flex justify-end gap-2 mt-4">

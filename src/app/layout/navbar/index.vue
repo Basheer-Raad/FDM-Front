@@ -12,6 +12,7 @@ import CartDrawer from "@/app/layout/navbar/CartDrawer.vue";
 import CustomizerDrawer from "@/app/layout/navbar/customizer/Drawer.vue";
 import { useLayoutStore } from "@/store/layout";
 import { SIDEBAR_SIZE } from "@/app/const";
+import logo from "@/assets/images/Larsatron_Logo-Eng.png";
 
 const cardDrawer = ref(false);
 const cartCount = ref(0);
@@ -122,7 +123,7 @@ const onOverlayClick = () => {
               <span
                 class="group-data-[topbar=dark]:hidden group-data-[topbar=brand]:hidden"
               >
-                <img :src="logoDark" alt="" class="h-6 mx-auto" />
+                <img :src="logo" alt="" class="h-10 mx-auto group-data-[topbar=dark]:bg-white group-data-[topbar=dark]:p-1 group-data-[topbar=dark]:rounded" />
               </span>
             </router-link>
             <router-link
@@ -132,12 +133,12 @@ const onOverlayClick = () => {
               <span
                 class="group-data-[topbar=dark]:hidden group-data-[topbar=brand]:hidden"
               >
-                <img :src="logoSm" alt="" class="h-6 mx-auto" />
+                <img :src="logo" alt="" class="h-10 mx-auto group-data-[topbar=dark]:bg-white group-data-[topbar=dark]:p-1 group-data-[topbar=dark]:rounded" />
               </span>
               <span
                 class="group-data-[topbar=dark]:block group-data-[topbar=brand]:block"
               >
-                <img :src="logoLight" alt="" class="h-6 mx-auto" />
+                <img :src="logo" alt="" class="h-10 mx-auto group-data-[topbar=dark]:bg-white group-data-[topbar=dark]:p-1 group-data-[topbar=dark]:rounded" />
               </span>
             </router-link>
           </div>

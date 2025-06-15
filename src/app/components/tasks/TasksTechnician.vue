@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, computed, onMounted } from "vue";
-import { Plus, Search, ChevronLeft, ChevronRight } from "lucide-vue-next";
+import { Search, ChevronLeft, ChevronRight } from "lucide-vue-next";
 import CreateEditDialogTechnician from "./CreateEditDialogTechnician.vue";
 import { apiService } from "@/app/service/httpService/apiService";
 import { Pencil } from "lucide-vue-next";
@@ -17,6 +17,7 @@ interface Todo {
     name: string;
     email: string;
   };
+  mediaPath: string;
 }
 
 const todoList = ref<Todo[]>([]);
@@ -48,7 +49,9 @@ const event = ref({
   completed: false,
   userId: 0,
   status: "pending",
-  customer: []
+  customer: [],
+  mediaPath: "",
+  service: "",
 });
 
 // Computed property for filtered and displayed lists
@@ -96,19 +99,6 @@ onMounted(() => {
   fetchTodos();
 });
 
-const handleCreateModal = () => {
-  event.value = {
-    id: Math.floor(Math.random() * 9000000) + 1000000,
-    todo: "",
-    completed: false,
-    userId: 1,
-    status: "pending",
-    customer: []
-  };
-  dataEdit.value = false;
-  addTodoModal.value = true;
-};
-
 const handleEditModal = (task) => {
   event.value = {
     id: task.id,
@@ -116,9 +106,17 @@ const handleEditModal = (task) => {
     status: task.status,
     user_id: task.user_id || task.userId,
     customer: task.customer?.id || task.customer,
+    mediaPath: task.mediaPath || "",
+    service: task.service || "",
   };
   dataEdit.value = true;
   addTodoModal.value = true;
+};
+
+const handleTaskSubmit = async (result) => {
+  if (result.success) {
+    await fetchTodos();
+  }
 };
 </script>
 
@@ -141,9 +139,6 @@ const handleEditModal = (task) => {
             class="inline-block size-4 absolute ltr:left-2.5 rtl:right-2.5 top-2.5 text-slate-500 dark:text-zink-200"
           />
         </div>
-        <TButton @click="handleCreateModal">
-          <Plus class="inline-block size-4" /> Add Task
-        </TButton>
       </div>
     </div>
 
@@ -200,7 +195,9 @@ const handleEditModal = (task) => {
             <td class="px-3.5 py-2.5 text-center">
               <button @click="handleEditModal(item)" class="text-blue-500 hover:text-blue-700">
                 <Pencil class="inline-block size-4" />
+               
               </button>
+              
             </td>
           </tr>
         </tbody>
@@ -249,7 +246,7 @@ const handleEditModal = (task) => {
       </div>
     </div>
   </TCard>
-  <CreateEditDialog
+  <CreateEditDialogTechnician
     v-model="addTodoModal"
     :data-edit="dataEdit"
     :event="event"

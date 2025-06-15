@@ -17,6 +17,7 @@ interface Todo {
     name: string;
     email: string;
   };
+  mediaPath: string;
 }
 
 const todoList = ref<Todo[]>([]);
@@ -30,6 +31,7 @@ const tableHeader = [
   { label: "Customer", value: "customer", align: "left" },
   { label: "Status", value: "status", align: "left" },
   { label: "User", value: "user", align: "left" },
+  // { label: "Media", value: "mediaPath", align: "left" },
 ];
 
 const tableConfig = {
@@ -49,6 +51,8 @@ const event = ref({
   userId: 0,
   status: "pending",
   customer: [],
+  mediaPath: "",
+  service: "",
 });
 
 // Computed property for filtered and displayed lists
@@ -116,7 +120,9 @@ const handleEditModal = (task) => {
     status: task.status,
     user_id: task.user_id || task.userId,
     customer: task.customer?.id || task.customer,
-  };
+    mediaPath: task.mediaPath || "",
+    service: task.service || "",
+      };
   dataEdit.value = true;
   addTodoModal.value = true;
 };
@@ -208,6 +214,9 @@ const handleTaskSubmit = async (result) => {
               <template v-else-if="header.value === 'user'">
                 {{ item.user?.name || "-" }}
               </template>
+              <!-- <template v-else-if="header.value === 'mediaPath'">
+                <img :src="item.mediaPath" alt="Media" class="w-10 h-10 rounded-full" />
+              </template> -->
               <template v-else>
                 {{ item[header.value] }}
               </template>

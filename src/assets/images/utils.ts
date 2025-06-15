@@ -18,6 +18,7 @@ import newDocument from "@/assets/images/new-document.png";
 import radioArrow from "@/assets/images/radio-arrow.svg";
 import signature from "@/assets/images/signature.png";
 import support from "@/assets/images/support.png";
+import logo from "@/assets/images/Larsatron Logo-emblem.png";
 
 export {
   authBgDark,
@@ -39,5 +40,6 @@ export {
   newDocument,
   radioArrow,
   signature,
-  support
+  support,
+  logo
 };
