@@ -311,7 +311,7 @@ const handleFileChange = (event: Event) => {
                 <option
                   v-for="meter in meterOptions"
                   :key="meter.id"
-                  :value="meter.meterNo"
+                  :value="meter"
                 >
                   {{ meter.meterNo }} 
                 </option>
