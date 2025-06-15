@@ -18,6 +18,8 @@ interface Todo {
     email: string;
   };
   mediaPath: string;
+  service: string;
+  meters: { meterNo: string }[];
 }
 
 const todoList = ref<Todo[]>([]);
@@ -29,6 +31,8 @@ const tableHeader = [
   { label: "ID", value: "id", align: "left" },
   { label: "Todo", value: "todo", align: "left" },
   { label: "Customer", value: "customer", align: "left" },
+  { label: "Service", value: "service", align: "left" },
+  { label: "Meter No", value: "meterNo", align: "left" },
   { label: "Status", value: "status", align: "left" },
   { label: "User", value: "user", align: "left" },
   // { label: "Media", value: "mediaPath", align: "left" },
@@ -218,6 +222,12 @@ const handleTaskSubmit = async (result) => {
               </template>
               <template v-else-if="header.value === 'user'">
                 {{ item.user?.name || "-" }}
+              </template>
+              <template v-else-if="header.value === 'service'">
+                {{ item.service || "-" }}
+              </template>
+              <template v-else-if="header.value === 'meterNo'">
+                {{ item.meters?.meterNo || "-" }}
               </template>
               <!-- <template v-else-if="header.value === 'mediaPath'">
                 <img :src="item.mediaPath" alt="Media" class="w-10 h-10 rounded-full" />

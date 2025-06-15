@@ -52,7 +52,7 @@ watch(
     if (typeof customerObj === "number" || typeof customerObj === "string") {
       customerObj = customerList.value.find((c) => c.id == customerObj) || null;
     }
-     Object.assign(todoData, {
+    Object.assign(todoData, {
       ...newVal,
       customer: customerObj,
       service: newVal.service !== undefined ? newVal.service : todoData.service,
@@ -190,6 +190,24 @@ const handleSubmit = async (data: any) => {
                 <option value="repair_meter">Repair Meter</option>
               </select>
             </div>
+            <div class="xl:col-span-12" v-if="isServiceEnabled">
+              <label class="inline-block mb-2 text-base font-medium"
+                >Service</label
+              >
+              <select
+                v-model="todoData.service"
+                required
+                class="form-select border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 dark:bg-zink-700 dark:text-zink-100"
+              >
+                <option
+                  v-for="service in serviceOptions"
+                  :key="service.value"
+                  :value="service.value"
+                >
+                  {{ service.label }}
+                </option>
+              </select>
+            </div>
             <div class="xl:col-span-12">
               <label class="block mb-2 text-base font-medium"
                 >Description (Optional)</label
@@ -269,24 +287,7 @@ const handleSubmit = async (data: any) => {
                 </option>
               </select>
             </div>
-            <div class="xl:col-span-12" v-if="isServiceEnabled">
-              <label class="inline-block mb-2 text-base font-medium"
-                >Service</label
-              >
-              <select
-                v-model="todoData.service"
-                required
-                class="form-select border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 dark:bg-zink-700 dark:text-zink-100"
-              >
-                <option
-                  v-for="service in serviceOptions"
-                  :key="service.value"
-                  :value="service.value"
-                >
-                  {{ service.label }}
-                </option>
-              </select>
-            </div>
+           
           </div>
           <div class="flex justify-end gap-2 mt-4">
             <TButton

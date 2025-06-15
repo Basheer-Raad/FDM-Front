@@ -23,6 +23,8 @@ const props = defineProps({
       customer: null,
       mediaPath: "",
       service: "",
+      meters: null,
+      description: "",
     }),
   },
 });
@@ -41,6 +43,8 @@ const todoData = ref({
   customer: props.event.customer || null,
   mediaPath: props.event.mediaPath || "",
   service: props.event.service || "",
+  meters: props.event.meters || "",
+  description: props.event.description || "",
 });
 
 const selectedFile = ref<File | null>(null);
@@ -56,6 +60,8 @@ watch(
       ...newVal,
       customer: customerObj,
       service: newVal.service || "",
+      meters: newVal.meters || "",
+      description: newVal.description || "",
     };
   },
   { immediate: true }
@@ -79,6 +85,17 @@ const serviceOptions = [
 
 const userList = ref<{ id: number; name: string }[]>([]);
 const customerList = ref<any[]>([]);
+
+watch(
+  customerList,
+  (newList) => {
+    if (props.event.customer && (typeof props.event.customer === "number" || typeof props.event.customer === "string")) {
+      const customerObj = newList.find((c) => c.id == props.event.customer) || null;
+      todoData.value.customer = customerObj;
+    }
+  },
+  { immediate: true }
+);
 
 const meterOptions = computed(() => {
   if (todoData.value.todo === "install_meter") {
@@ -294,9 +311,9 @@ const handleFileChange = (event: Event) => {
                 <option
                   v-for="meter in meterOptions"
                   :key="meter.id"
-                  :value="meter"
+                  :value="meter.meterNo"
                 >
-                  {{ meter.meterNo }}
+                  {{ meter.meterNo }} 
                 </option>
               </select>
             </div>

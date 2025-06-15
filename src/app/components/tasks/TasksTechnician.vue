@@ -18,6 +18,10 @@ interface Todo {
     email: string;
   };
   mediaPath: string;
+  service: string;
+  meters?: {
+    meterNo: string;
+  };
 }
 
 const todoList = ref<Todo[]>([]);
@@ -29,6 +33,8 @@ const tableHeader = [
   { label: "ID", value: "id", align: "left" },
   { label: "Todo", value: "todo", align: "left" },
   { label: "Customer", value: "customer", align: "left" },
+  { label: "Service", value: "service", align: "left" },
+  { label: "Meter No", value: "meterNo", align: "left" },
   { label: "Status", value: "status", align: "left" },
   { label: "User", value: "user", align: "left" },
 ];
@@ -52,6 +58,8 @@ const event = ref({
   customer: [],
   mediaPath: "",
   service: "",
+  meters: [],
+  description: "",
 });
 
 // Computed property for filtered and displayed lists
@@ -108,7 +116,9 @@ const handleEditModal = (task) => {
     customer: task.customer?.id || task.customer,
     mediaPath: task.mediaPath || "",
     service: task.service || "",
-  };
+    meters: task.meters || "",
+    description: task.description || "",
+    };
   dataEdit.value = true;
   addTodoModal.value = true;
 };
@@ -184,6 +194,12 @@ const handleTaskSubmit = async (result) => {
               </template>
               <template v-else-if="header.value === 'customer'">
                 {{ item.customer?.customerName || '-' }}
+              </template>
+              <template v-else-if="header.value === 'service'">
+                {{ item.service || '-' }}
+              </template>
+              <template v-else-if="header.value === 'meterNo'">
+                {{ item.meters?.meterNo || '-' }}
               </template>
               <template v-else-if="header.value === 'user'">
                 {{ item.user?.name || '-' }}
