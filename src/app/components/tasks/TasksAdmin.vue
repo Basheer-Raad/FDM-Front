@@ -108,6 +108,9 @@ const handleCreateModal = () => {
     userId: 1,
     status: "pending",
     customer: [],
+    service: "",
+    meters: [],
+    description: "",
   };
   dataEdit.value = false;
   addTodoModal.value = true;
@@ -122,7 +125,9 @@ const handleEditModal = (task) => {
     customer: task.customer?.id || task.customer,
     mediaPath: task.mediaPath || "",
     service: task.service || "",
-      };
+    meters: task.meters || [],
+    description: task.description || "",
+  };
   dataEdit.value = true;
   addTodoModal.value = true;
 };

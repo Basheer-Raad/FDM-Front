@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref, onMounted, watch } from "vue";
+import { computed, ref, onMounted, watch, reactive } from "vue";
 import { X } from "lucide-vue-next";
 import { apiService } from "@/app/service/httpService/apiService";
 
@@ -36,11 +36,13 @@ const showModal = computed({
   },
 });
 
-const todoData = ref({
+const todoData = reactive({
   ...props.event,
   customer: props.event.customer || null,
   mediaPath: props.event.mediaPath || "",
   service: props.event.service || "",
+  meters: props.event.meters || [],
+  description: props.event.description || "",
 });
 
 watch(
@@ -50,7 +52,11 @@ watch(
     if (typeof customerObj === "number" || typeof customerObj === "string") {
       customerObj = customerList.value.find((c) => c.id == customerObj) || null;
     }
-    todoData.value = { ...newVal, customer: customerObj, service: newVal.service || "" };
+     Object.assign(todoData, {
+      ...newVal,
+      customer: customerObj,
+      service: newVal.service !== undefined ? newVal.service : todoData.service,
+    });
   },
   { immediate: true }
 );
@@ -75,19 +81,19 @@ const userList = ref<{ id: number; name: string }[]>([]);
 const customerList = ref<any[]>([]);
 
 const meterOptions = computed(() => {
-  if (!todoData.value.customer || todoData.value.todo !== "repair_meter") {
+  if (!todoData.customer || todoData.todo !== "repair_meter") {
     return [];
   }
-  console.log(todoData.value.customer.infoMeterList);
-  return todoData.value.customer.infoMeterList || [];
+  console.log(todoData.customer.infoMeterList);
+  return todoData.customer.infoMeterList || [];
 });
 
 const isMeterEnabled = computed(() => {
-  return todoData.value.todo === "repair_meter";
+  return todoData.todo === "repair_meter";
 });
 
 const isServiceEnabled = computed(() => {
-  return todoData.value.todo === "repair_meter";
+  return todoData.todo === "repair_meter";
 });
 
 const fetchUsers = async () => {
@@ -123,15 +129,13 @@ const handleSubmit = async (data: any) => {
     const submitData = {
       ...data,
       meters: data.todo === "install_meter" ? [] : data.meters,
-      service: data.service,
+      service: isServiceEnabled.value ? data.service : null,
     };
     console.log("Submitting data:", submitData);
 
     if (props.dataEdit) {
-      // Edit existing task
       await apiService.put(`/tasks/${props.event.id}`, submitData);
     } else {
-      // Create new task
       await apiService.post("/tasks", submitData);
       console.log("Created task:", submitData);
     }
