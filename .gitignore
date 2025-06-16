@@ -4,12 +4,12 @@ node_modules/
 # Logs
 npm-debug.log*
 yarn-debug.log*
-yarn-error.log*
+pnpm-debug.log*
 
 # Build output
-/dist
-/build
-/public/build
+dist/
+build/
+public/build/
 
 # Local env files
 .env
@@ -33,3 +33,15 @@ coverage/
 
 # Others
 *.local
+*.log
+*.tmp
+*.swp
+*.bak
+*.orig
+*.lock
+*.pid
+*.seed
+*.pid.lock
+
+# Vite directory
+.vite/

@@ -29,13 +29,21 @@ const basicNav = ref("Home");
       id="navbar7"
       class="absolute inset-x-0 z-20 items-center hidden py-3 bg-white shadow-lg dark:bg-zink-600 dark:md:bg-transparent md:z-0 navbar-menu rounded-b-md md:shadow-none md:flex top-full ltr:ml-auto rtl:mr-auto md:relative md:bg-transparent md:rounded-none md:top-auto md:py-0"
     >
-      <li v-for="item in navData">
+    <li v-for="item in navData" class="mx-2">
+        <router-link
+          v-if="item === 'Home'"
+          to="/"
+          class="block md:inline-block px-4 md:px-3 py-2.5 md:py-0.5 text-15 font-medium text-slate-800 transition-all duration-300 ease-linear hover:text-custom-500 [&.active]:text-custom-500 dark:text-zink-100 dark:hover:text-custom-500 dark:[&.active]:text-custom-500"
+          :class="{ active: item === basicNav }"
+          @click.native="basicNav = item"
+        >
+          {{ item }}
+        </router-link>
         <a
+          v-else
           href="#!"
           class="block md:inline-block px-4 md:px-3 py-2.5 md:py-0.5 text-15 font-medium text-slate-800 transition-all duration-300 ease-linear hover:text-custom-500 [&.active]:text-custom-500 dark:text-zink-100 dark:hover:text-custom-500 dark:[&.active]:text-custom-500"
-          :class="{
-            active: item === basicNav
-          }"
+          :class="{ active: item === basicNav }"
           @click="basicNav = item"
         >
           {{ item }}

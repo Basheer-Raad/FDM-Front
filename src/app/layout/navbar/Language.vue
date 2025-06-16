@@ -3,8 +3,10 @@ import { ukFlag } from "@/assets/images/flags/utils";
 import { languagesData } from "@/app/layout/navbar/utils";
 import NavBtn from "@/app/layout/navbar/Button.vue";
 import { useI18n } from "vue-i18n";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import { useLayoutStore } from "@/store/layout";
 const i18n = useI18n();
+const layoutStore = useLayoutStore();
 
 defineProps({
   showName: {
@@ -22,7 +24,33 @@ const setLanguage = (entry: { [key: string]: string }) => {
   }
   i18n.locale.value = lang;
   langTitle.value = title;
+  localStorage.setItem("selectedLanguage", JSON.stringify({ lang, title, src }));
+  // RTL/LTR direction switch
+  if (lang === "ar") {
+    layoutStore.changeDir("rtl");
+  } else {
+    layoutStore.changeDir("ltr");
+  }
 };
+
+onMounted(() => {
+  const saved = localStorage.getItem("selectedLanguage");
+  if (saved) {
+    const { lang, title, src } = JSON.parse(saved);
+    i18n.locale.value = lang;
+    langTitle.value = title;
+    const element = document.getElementById("header-lang-img");
+    if (element && src) {
+      element.setAttribute("src", src);
+    }
+    // RTL/LTR direction switch on mount
+    if (lang === "ar") {
+      layoutStore.changeDir("rtl");
+    } else {
+      layoutStore.changeDir("ltr");
+    }
+  }
+});
 </script>
 <template>
   <TList :items="languagesData" placement="bottom-start">

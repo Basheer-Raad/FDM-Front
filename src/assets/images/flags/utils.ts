@@ -8,6 +8,7 @@ import itFlag from "@/assets/images/flags/20/it.svg";
 import ruFlag from "@/assets/images/flags/20/ru.svg";
 import aeFlag from "@/assets/images/flags/20/ae.svg";
 import ukFlag from "@/assets/images/flags/20/ukFlag.svg";
+import iqFlag from "@/assets/images/flags/20/iq.svg";
 
 export {
   usFlag,
@@ -19,5 +20,6 @@ export {
   itFlag,
   ruFlag,
   aeFlag,
-  ukFlag
+  ukFlag,
+  iqFlag
 };

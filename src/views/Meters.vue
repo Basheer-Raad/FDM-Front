@@ -4,7 +4,7 @@ import Meters from "@/app/components/meter/index.vue";
 </script>
 <template>
   <div>
-    <PageHeader title="Meters" :items="['Meters']" />
+    <!-- <PageHeader title="Meters" :items="['Meters']" /> -->
     <Meters />
   </div>
 </template>

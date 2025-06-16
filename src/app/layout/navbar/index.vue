@@ -4,21 +4,16 @@ import { ChevronsLeft, ChevronsRight, Search } from "lucide-vue-next";
 import { logoDark, logoLight, logoSm } from "@/assets/images/utils";
 import Language from "@/app/layout/navbar/Language.vue";
 import SiteMode from "@/app/layout/navbar/SiteMode.vue";
-import Cart from "@/app/layout/navbar/Cart.vue";
 import Notification from "@/app/layout/navbar/Notification.vue";
 import Settings from "@/app/layout/navbar/Settings.vue";
 import Profile from "@/app/layout/navbar/Profile.vue";
-import CartDrawer from "@/app/layout/navbar/CartDrawer.vue";
 import CustomizerDrawer from "@/app/layout/navbar/customizer/Drawer.vue";
 import { useLayoutStore } from "@/store/layout";
 import { SIDEBAR_SIZE } from "@/app/const";
 import logo from "@/assets/images/Larsatron_Logo-Eng.png";
 
-const cardDrawer = ref(false);
-const cartCount = ref(0);
-const isVisible = ref(false);
-
 const customizerDrawer = ref(false);
+const isVisible = ref(false);
 
 const layoutStore = computed(() => {
   return useLayoutStore();
@@ -47,16 +42,9 @@ const onWindowResize = () => {
     layoutStore.value.changeSideBarSize(DEFAULT);
   }
 };
-const toggleCartDrawer = () => {
-  cardDrawer.value = !cardDrawer.value;
-};
 
 const toggleCustomizerDrawer = () => {
   customizerDrawer.value = !customizerDrawer.value;
-};
-
-const updateCount = (newVal: number) => {
-  cartCount.value = newVal;
 };
 
 watch(isVisible, (newVal: boolean) => {
@@ -176,7 +164,6 @@ const onOverlayClick = () => {
               <Language />
             </div>
             <SiteMode />
-            <Cart @toggleDrawer="toggleCartDrawer" />
             <Notification />
             <div class="relative items-center hidden h-header md:flex">
               <Settings @toggleDrawer="toggleCustomizerDrawer" />
@@ -187,23 +174,7 @@ const onOverlayClick = () => {
       </div>
     </div>
   </header>
-  <TDrawer v-model="cardDrawer" width="md:w-96">
-    <template #title>
-      <div class="grow">
-        <h5 class="mb-0 text-16 font-medium">
-          Shopping Cart
-          <span
-            class="inline-flex items-center justify-center size-5 ml-1 text-[11px] font-medium border rounded-full text-white bg-custom-500 border-custom-500"
-          >
-            {{ cartCount }}
-          </span>
-        </h5>
-      </div>
-    </template>
-    <template #content>
-      <CartDrawer @updateCount="updateCount" @hideCart="cardDrawer = false" />
-    </template>
-  </TDrawer>
+ 
   <TDrawer v-model="customizerDrawer" width="md:w-96">
     <template #title>
       <div class="flex justify-between border-slate-200 dark:border-zink-500">
