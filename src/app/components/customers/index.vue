@@ -2,31 +2,35 @@
 import { ref, computed, onMounted } from "vue";
 import { Plus, Search, ChevronLeft, ChevronRight } from "lucide-vue-next";
 import { apiService } from "@/app/service/httpService/apiService";
+import { useI18n } from "vue-i18n";
 
-interface User {
+const { t } = useI18n();
+
+interface Customer {
   id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  age: number;
+  customerName: string;
+  address: string;
+  tel: string;
+  typeDesc: string;
+  zoneName: string;
+  edcName: string;
 }
 
-const userList = ref<User[]>([]);
+const userList = ref<Customer[]>([]);
 const searchQuery = ref("");
 const addUserModal = ref(false);
 const page = ref(1);
 const loading = ref(false);
 
-const tableHeader = [
-  { label: "ID", value: "id", align: "left" },
-  { label: "Customer Name", value: "customerName", align: "left" },
-  { label: "Address", value: "address", align: "left" },
-  { label: "Phone", value: "tel", align: "left" },
-  { label: "Type", value: "typeDesc", align: "left" },
-  { label: "Zone", value: "zoneName", align: "left" },
-  { label: "EDC", value: "edcName", align: "left" },
-];
+const tableHeader = computed(() => [
+  { label: t("c-id"), value: "id", align: "left" },
+  { label: t("c-customer-name"), value: "customerName", align: "left" },
+  { label: t("c-address"), value: "address", align: "left" },
+  { label: t("c-phone"), value: "tel", align: "left" },
+  { label: t("c-type"), value: "typeDesc", align: "left" },
+  { label: t("c-zone"), value: "zoneName", align: "left" },
+  { label: t("c-edc"), value: "edcName", align: "left" },
+]);
 
 const tableConfig = {
   page: 1,
@@ -54,8 +58,12 @@ const displayedLists = computed(() => {
   const query = searchQuery.value.toLowerCase();
   return userList.value.filter(
     (user) =>
-      `${user.firstName} ${user.lastName}`.toLowerCase().includes(query) ||
-      user.email.toLowerCase().includes(query)
+      `${user.customerName}`.toLowerCase().includes(query) ||
+      user.address.toLowerCase().includes(query) ||
+      user.tel.toLowerCase().includes(query) ||
+      user.typeDesc.toLowerCase().includes(query) ||
+      user.zoneName.toLowerCase().includes(query) ||
+      user.edcName.toLowerCase().includes(query)
   );
 });
 
@@ -81,10 +89,10 @@ const paginatedData = computed(() => {
 const fetchUsers = async () => {
   loading.value = true;
   try {
-    const response = await apiService.get('/getCustomers');
+    const response = await apiService.get<any>("/getCustomers");
     // If your API returns { code: 200, data: [...] }
-    const data = Array.isArray(response.data) ? response.data : response.data?.data || [];
-    userList.value = data.map(item => ({
+    const data: any[] = Array.isArray(response.data) ? response.data : response.data?.data || [];
+    userList.value = data.map((item: any) => ({
       id: item.id,
       customerName: item.customerName,
       address: item.address,
@@ -111,7 +119,7 @@ onMounted(() => {
   <TCard id="userTable">
     <div class="flex items-center gap-3 mb-4">
       <h6 class="text-15 grow">
-        Customers (<b>{{ userList.length }}</b
+        {{ t('c-customers') }} (<b>{{ userList.length }}</b
         >)
       </h6>
       <div class="flex items-center gap-3">
@@ -120,7 +128,7 @@ onMounted(() => {
             type="text"
             v-model="searchQuery"
             class="form-input ltr:pl-8 rtl:pr-8 focus:z-10 dark:bg-zink-700 dark:border-zink-500 dark:text-zink-100 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200"
-            placeholder="Search customers..."
+            :placeholder="t('c-search-customers')"
           />
           <Search
             class="inline-block size-4 absolute ltr:left-2.5 rtl:right-2.5 top-2.5 text-slate-500 dark:text-zink-200"
@@ -132,7 +140,7 @@ onMounted(() => {
 
     <div v-if="loading" class="text-center py-4">
       <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-      <p class="mt-2 text-slate-500">Loading customers...</p>
+      <p class="mt-2 text-slate-500">{{ t('c-loading-customers') }}</p>
     </div>
 
     <div v-else class="overflow-x-auto">
@@ -171,9 +179,9 @@ onMounted(() => {
         <Search
           class="size-6 mx-auto mb-3 text-sky-500 fill-sky-100 dark:fill-sky-500/20"
         />
-        <h5 class="mt-2 mb-1">Sorry! No Result Found</h5>
+        <h5 class="mt-2 mb-1">{{ t('c-no-result-found') }}</h5>
         <p class="mb-0 text-slate-500 dark:text-zink-200">
-            We've searched but did not find any customers matching your search.
+            {{ t('c-no-customers-match') }}
         </p>
       </div>
     </div>
@@ -184,8 +192,8 @@ onMounted(() => {
     >
       <div class="grow">
         <p class="text-slate-500 dark:text-zink-200">
-          Showing <b class="showing">{{ getEndIndex }}</b> of
-          <b class="total-records">{{ totalItems }}</b> Results
+          {{ t('c-showing') }} <b class="showing">{{ getEndIndex }}</b> {{ t('c-of') }}
+          <b class="total-records">{{ totalItems }}</b> {{ t('c-results') }}
         </p>
       </div>
 
@@ -198,10 +206,10 @@ onMounted(() => {
         >
           <template #prev>
             <ChevronLeft class="size-4 mr-1 rtl:rotate-180" />
-            Prev
+            {{ t('c-prev') }}
           </template>
           <template #next>
-            Next
+            {{ t('c-next') }}
             <ChevronRight class="size-4 ml-1 rtl:rotate-180" />
           </template>
         </TPagination>

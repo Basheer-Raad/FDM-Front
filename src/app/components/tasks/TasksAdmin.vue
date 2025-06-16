@@ -149,7 +149,7 @@ const handleTaskSubmit = async (result) => {
   <TCard id="todoTable">
     <div class="flex items-center gap-3 mb-4">
       <h6 class="text-15 grow">
-        {{ t('t-tasks') }} (<b>{{ todoList.length }}</b
+        {{ t('t-tasks-admin') }} (<b>{{ todoList.length }}</b
         >)
       </h6>
       <div class="flex items-center gap-3">

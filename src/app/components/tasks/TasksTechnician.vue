@@ -4,6 +4,7 @@ import { Search, ChevronLeft, ChevronRight } from "lucide-vue-next";
 import CreateEditDialogTechnician from "./CreateEditDialogTechnician.vue";
 import { apiService } from "@/app/service/httpService/apiService";
 import { Pencil } from "lucide-vue-next";
+import { useI18n } from "vue-i18n";
 
 interface Todo {
   id: number;
@@ -29,14 +30,16 @@ const searchQuery = ref("");
 const addTodoModal = ref(false);
 const page = ref(1);
 
+const { t } = useI18n();
+
 const tableHeader = [
-  { label: "ID", value: "id", align: "left" },
-  { label: "Todo", value: "todo", align: "left" },
-  { label: "Customer", value: "customer", align: "left" },
-  { label: "Service", value: "service", align: "left" },
-  { label: "Meter No", value: "meterNo", align: "left" },
-  { label: "Status", value: "status", align: "left" },
-  { label: "User", value: "user", align: "left" },
+  { label: t("t-id"), value: "id", align: "left" },
+  { label: t("t-todo"), value: "todo", align: "left" },
+  { label: t("t-customer"), value: "customer", align: "left" },
+  { label: t("t-service"), value: "service", align: "left" },
+  { label: t("t-meter-no"), value: "meterNo", align: "left" },
+  { label: t("t-status"), value: "status", align: "left" },
+  { label: t("t-user"), value: "user", align: "left" },
 ];
 
 const tableConfig = {
@@ -134,7 +137,7 @@ const handleTaskSubmit = async (result) => {
   <TCard id="todoTable">
     <div class="flex items-center gap-3 mb-4">
       <h6 class="text-15 grow">
-        Tasks (<b>{{ todoList.length }}</b
+        {{ t('t-tasks-technician') }} (<b>{{ todoList.length }}</b
         >)
       </h6>
       <div class="flex items-center gap-3">
@@ -143,7 +146,7 @@ const handleTaskSubmit = async (result) => {
             type="text"
             v-model="searchQuery"
             class="form-input ltr:pl-8 rtl:pr-8 focus:z-10 dark:bg-zink-700 dark:border-zink-500 dark:text-zink-100 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200"
-            placeholder="Search tasksukFlag..."
+            :placeholder="t('t-search-tasks')"
           />
           <Search
             class="inline-block size-4 absolute ltr:left-2.5 rtl:right-2.5 top-2.5 text-slate-500 dark:text-zink-200"
@@ -225,9 +228,9 @@ const handleTaskSubmit = async (result) => {
         <Search
           class="size-6 mx-auto mb-3 text-sky-500 fill-sky-100 dark:fill-sky-500/20"
         />
-        <h5 class="mt-2 mb-1">Sorry! No Result Found</h5>
+        <h5 class="mt-2 mb-1">{{ t('t-no-result-found') }}</h5>
         <p class="mb-0 text-slate-500 dark:text-zink-200">
-          We've searched but did not find any todos matching your search.
+          {{ t('t-no-todos-match') }}
         </p>
       </div>
     </div>
@@ -238,8 +241,8 @@ const handleTaskSubmit = async (result) => {
     >
       <div class="grow">
         <p class="text-slate-500 dark:text-zink-200">
-          Showing <b class="showing">{{ getEndIndex }}</b> of
-          <b class="total-records">{{ totalItems }}</b> Results
+          {{ t('t-showing') }} <b class="showing">{{ getEndIndex }}</b> {{ t('t-of') }}
+          <b class="total-records">{{ totalItems }}</b> {{ t('t-results') }}
         </p>
       </div>
 
@@ -252,10 +255,10 @@ const handleTaskSubmit = async (result) => {
         >
           <template #prev>
             <ChevronLeft class="size-4 mr-1 rtl:rotate-180" />
-            Prev
+            {{ t('t-prev') }}
           </template>
           <template #next>
-            Next
+            {{ t('t-next') }}
             <ChevronRight class="size-4 ml-1 rtl:rotate-180" />
           </template>
         </TPagination>

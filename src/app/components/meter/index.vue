@@ -3,6 +3,9 @@ import { ref, computed, onMounted } from "vue";
 import { Plus, Search, ChevronLeft, ChevronRight } from "lucide-vue-next";
 import CreateEditDialog from "./CreateEditDialog.vue";
 import StatusChangeDialog from "./StatusChangeDialog.vue";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 interface Meter {
   id: number;
@@ -19,15 +22,15 @@ const searchQuery = ref("");
 const addMeterModal = ref(false);
 const page = ref(1);
 
-const tableHeader = [
-  { label: "ID", value: "id", align: "left" },
-  { label: "Type", value: "type", align: "left" },
-  { label: "Serial Number", value: "serial_number", align: "left" },
-  { label: "Customer ID", value: "customer_id", align: "left" },
-  { label: "Location", value: "location", align: "left" },
-  { label: "Status", value: "status", align: "left" },
-  { label: "Installed At", value: "installed_at", align: "left" },
-];
+const tableHeader = computed(() => [
+  { label: t("m-id"), value: "id", align: "left" },
+  { label: t("m-type"), value: "type", align: "left" },
+  { label: t("m-serial-number"), value: "serial_number", align: "left" },
+  { label: t("m-customer-id"), value: "customer_id", align: "left" },
+  { label: t("m-location"), value: "location", align: "left" },
+  { label: t("m-status"), value: "status", align: "left" },
+  { label: t("m-installed-at"), value: "installed_at", align: "left" },
+]);
 
 const tableConfig = {
   page: 1,
@@ -129,7 +132,7 @@ const updateMeterStatus = (data: { id: number; status: string }) => {
   <TCard id="meterTable">
     <div class="flex items-center gap-3 mb-4">
       <h6 class="text-15 grow">
-        Meters (<b>{{ meterList.length }}</b
+        {{ t('m-meters') }} (<b>{{ meterList.length }}</b
         >)
       </h6>
       <div class="flex items-center gap-3">
@@ -138,14 +141,14 @@ const updateMeterStatus = (data: { id: number; status: string }) => {
             type="text"
             v-model="searchQuery"
             class="form-input ltr:pl-8 rtl:pr-8 focus:z-10 dark:bg-zink-700 dark:border-zink-500 dark:text-zink-100 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200"
-            placeholder="Search meters..."
+            :placeholder="t('m-search-meters')"
           />
           <Search
             class="inline-block size-4 absolute ltr:left-2.5 rtl:right-2.5 top-2.5 text-slate-500 dark:text-zink-200"
           />
         </div>
         <TButton @click="handleCreateModal">
-          <Plus class="inline-block size-4" /> Add Meter
+          <Plus class="inline-block size-4" /> {{ t('m-add-meter') }}
         </TButton>
       </div>
     </div>
@@ -179,18 +182,18 @@ const updateMeterStatus = (data: { id: number; status: string }) => {
                   @click="handleStatusChange(item)"
                   :class="[
                     'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium cursor-pointer hover:opacity-80',
-                    item[header.value] === 'active'
+                    item[header.value as keyof Meter] === 'active'
                       ? 'bg-green-100 text-green-800 dark:bg-green-500/20 dark:text-green-400'
-                      : item[header.value] === 'inactive'
+                      : item[header.value as keyof Meter] === 'inactive'
                       ? 'bg-red-100 text-red-800 dark:bg-red-500/20 dark:text-red-400'
                       : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-500/20 dark:text-yellow-400',
                   ]"
                 >
-                  {{ item[header.value] }}
+                  {{ item[header.value as keyof Meter] }}
                 </span>
               </template>
               <template v-else>
-                {{ item[header.value] }}
+                {{ item[header.value as keyof Meter] }}
               </template>
             </td>
           </tr>
@@ -203,9 +206,9 @@ const updateMeterStatus = (data: { id: number; status: string }) => {
         <Search
           class="size-6 mx-auto mb-3 text-sky-500 fill-sky-100 dark:fill-sky-500/20"
         />
-        <h5 class="mt-2 mb-1">Sorry! No Result Found</h5>
+        <h5 class="mt-2 mb-1">{{ t('m-no-result-found') }}</h5>
         <p class="mb-0 text-slate-500 dark:text-zink-200">
-          We've searched but did not find any meters matching your search.
+          {{ t('m-no-meters-match') }}
         </p>
       </div>
     </div>
@@ -216,8 +219,8 @@ const updateMeterStatus = (data: { id: number; status: string }) => {
     >
       <div class="grow">
         <p class="text-slate-500 dark:text-zink-200">
-          Showing <b class="showing">{{ getEndIndex }}</b> of
-          <b class="total-records">{{ totalItems }}</b> Results
+          {{ t('m-showing') }} <b class="showing">{{ getEndIndex }}</b> {{ t('m-of') }}
+          <b class="total-records">{{ totalItems }}</b> {{ t('m-results') }}
         </p>
       </div>
 
@@ -230,10 +233,10 @@ const updateMeterStatus = (data: { id: number; status: string }) => {
         >
           <template #prev>
             <ChevronLeft class="size-4 mr-1 rtl:rotate-180" />
-            Prev
+            {{ t('m-prev') }}
           </template>
           <template #next>
-            Next
+            {{ t('m-next') }}
             <ChevronRight class="size-4 ml-1 rtl:rotate-180" />
           </template>
         </TPagination>

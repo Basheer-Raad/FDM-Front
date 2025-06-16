@@ -23,7 +23,7 @@ const activeNav = ref("Home");
       <li v-for="item in navData">
         <a
           href="#!"
-          class="block md:inline-block px-4 md:px-3 py-2.5 md:py-0.5 text-15 font-medium text-slate-400 transition-all duration-300 ease-linear hover:text-custom-500 [&.active]:text-custom-500 dark:text-zink-200 dark:hover:text-custom-500 dark:[&.active]:text-custom-500"
+          class="block mx-4 md:inline-block px-4 md:px-3 py-2.5 md:py-0.5 text-15 font-medium text-slate-400 transition-all duration-300 ease-linear hover:text-custom-500 [&.active]:text-custom-500 dark:text-zink-200 dark:hover:text-custom-500 dark:[&.active]:text-custom-500"
           :class="{
             active: item === activeNav
           }"

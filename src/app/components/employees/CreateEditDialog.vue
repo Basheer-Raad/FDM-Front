@@ -1,6 +1,9 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
 import { X } from "lucide-vue-next";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 const emit = defineEmits(["update:modelValue", "handleSubmit"]);
 
@@ -43,7 +46,7 @@ const employeeData = ref({ ...props.event });
     <template #content>
       <div class="flex items-center justify-between p-4 border-b dark:border-zink-500">
         <h5 class="text-16" id="addEmployeeLabel">
-          {{ props.dataEdit ? "Edit Employee" : "Create Employee" }}
+          {{ props.dataEdit ? t('e-edit-employee') : t('e-create-employee') }}
         </h5>
         <button
           @click="showModal = false"
@@ -64,15 +67,15 @@ const employeeData = ref({ ...props.event });
               <TInputField
                 id="employeeId"
                 disabled
-                label="ID"
-                :modelValue="employeeData.id ? '#' + employeeData.id : 'Auto'"
+                :label="t('e-id')"
+                :modelValue="employeeData.id ? '#' + employeeData.id : t('e-auto')"
                 hide-details
               />
             </div>
             <div class="xl:col-span-6">
               <TInputField
-                label="First Name"
-                placeholder="Enter first name"
+                :label="t('e-first-name')"
+                :placeholder="t('e-enter-first-name')"
                 v-model="employeeData.firstName"
                 hide-details
                 required
@@ -80,8 +83,8 @@ const employeeData = ref({ ...props.event });
             </div>
             <div class="xl:col-span-6">
               <TInputField
-                label="Last Name"
-                placeholder="Enter last name"
+                :label="t('e-last-name')"
+                :placeholder="t('e-enter-last-name')"
                 v-model="employeeData.lastName"
                 hide-details
                 required
@@ -89,29 +92,29 @@ const employeeData = ref({ ...props.event });
             </div>
             <div class="xl:col-span-12">
               <TInputField
-                label="Email"
+                :label="t('e-email')"
                 type="email"
                 v-model="employeeData.email"
-                placeholder="Enter email address"
+                :placeholder="t('e-enter-email')"
                 hide-details
                 required
               />
             </div>
             <div class="xl:col-span-6">
               <TInputField
-                label="Phone"
+                :label="t('e-phone')"
                 v-model="employeeData.phone"
-                placeholder="Enter phone number"
+                :placeholder="t('e-enter-phone')"
                 hide-details
                 required
               />
             </div>
             <div class="xl:col-span-6">
               <TInputField
-                label="Age"
+                :label="t('e-age')"
                 type="number"
                 v-model="employeeData.age"
-                placeholder="Enter age"
+                :placeholder="t('e-enter-age')"
                 hide-details
                 required
               />
@@ -124,10 +127,10 @@ const employeeData = ref({ ...props.event });
               id="close-modal"
               @click="showModal = false"
             >
-              Cancel
+              {{ t('e-cancel') }}
             </TButton>
             <TButton type="submit">
-              {{ props.dataEdit ? "Save" : "Create Employee" }}
+              {{ props.dataEdit ? t('e-save') : t('e-create-employee') }}
             </TButton>
           </div>
         </form>

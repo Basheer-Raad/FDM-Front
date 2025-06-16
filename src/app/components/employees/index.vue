@@ -3,6 +3,9 @@ import { ref, computed, onMounted } from "vue";
 import { Plus, Search, ChevronLeft, ChevronRight } from "lucide-vue-next";
 import CreateEditDialog from "./CreateEditDialog.vue";
 import { apiService } from "@/app/service/httpService/apiService";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 interface User {
   id: number;
@@ -20,10 +23,10 @@ const page = ref(1);
 const loading = ref(false);
 
 const tableHeader = [
-  { label: "ID", value: "id", align: "left" },
-  { label: "Name", value: "name", align: "left" },
-  { label: "Email", value: "email", align: "left" },
-  { label: "Created At", value: "created_at", align: "left" },
+  { label: t("e-id"), value: "id", align: "left" },
+  { label: t("e-name"), value: "name", align: "left" },
+  { label: t("e-email"), value: "email", align: "left" },
+  { label: t("e-created-at"), value: "created_at", align: "left" },
 ];
 
 const tableConfig = {
@@ -82,7 +85,7 @@ const paginatedData = computed(() => {
 const fetchUsers = async () => {
   loading.value = true;
   try {
-    const data = await apiService.get<User[]>('/users');
+    const data = await apiService.get<User[]>("/users");
     userList.value = data;
   } catch (error) {
     console.error("Error fetching users:", error);
@@ -93,7 +96,7 @@ const fetchUsers = async () => {
 
 const createUser = async (user: User) => {
   try {
-    const newUser = await apiService.post<User>('/users', user);
+    const newUser = await apiService.post<User>("/users", user);
     userList.value.unshift(newUser);
     addUserModal.value = false;
   } catch (error) {
@@ -104,7 +107,7 @@ const createUser = async (user: User) => {
 const updateUser = async (user: User) => {
   try {
     const updatedUser = await apiService.put<User>(`/users/${user.id}`, user);
-    const index = userList.value.findIndex(u => u.id === user.id);
+    const index = userList.value.findIndex((u) => u.id === user.id);
     if (index !== -1) {
       userList.value[index] = updatedUser;
     }
@@ -116,7 +119,7 @@ const updateUser = async (user: User) => {
 const deleteUser = async (id: number) => {
   try {
     await apiService.delete(`/users/${id}`);
-    userList.value = userList.value.filter(user => user.id !== id);
+    userList.value = userList.value.filter((user) => user.id !== id);
   } catch (error) {
     console.error("Error deleting user:", error);
   }
@@ -143,8 +146,7 @@ const handleCreateModal = () => {
   <TCard id="userTable">
     <div class="flex items-center gap-3 mb-4">
       <h6 class="text-15 grow">
-        Employees (<b>{{ userList.length }}</b
-        >)
+        {{ t('e-employees') }} (<b>{{ userList.length }}</b>)
       </h6>
       <div class="flex items-center gap-3">
         <div class="relative">
@@ -152,21 +154,21 @@ const handleCreateModal = () => {
             type="text"
             v-model="searchQuery"
             class="form-input ltr:pl-8 rtl:pr-8 focus:z-10 dark:bg-zink-700 dark:border-zink-500 dark:text-zink-100 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200"
-            placeholder="Search employees..."
+            :placeholder="t('e-search-employees')"
           />
           <Search
             class="inline-block size-4 absolute ltr:left-2.5 rtl:right-2.5 top-2.5 text-slate-500 dark:text-zink-200"
           />
         </div>
         <TButton @click="handleCreateModal">
-          <Plus class="inline-block size-4" /> Add Employee
+          <Plus class="inline-block size-4" /> {{ t('e-add-employee') }}
         </TButton>
       </div>
     </div>
 
     <div v-if="loading" class="text-center py-4">
       <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-      <p class="mt-2 text-slate-500">Loading employees...</p>
+      <p class="mt-2 text-slate-500">{{ t('e-loading-employees') }}</p>
     </div>
 
     <div v-else class="overflow-x-auto">
@@ -204,9 +206,9 @@ const handleCreateModal = () => {
         <Search
           class="size-6 mx-auto mb-3 text-sky-500 fill-sky-100 dark:fill-sky-500/20"
         />
-        <h5 class="mt-2 mb-1">Sorry! No Result Found</h5>
+        <h5 class="mt-2 mb-1">{{ t('e-no-result-found') }}</h5>
         <p class="mb-0 text-slate-500 dark:text-zink-200">
-          We've searched but did not find any employees matching your search.
+          {{ t('e-no-employees-match') }}
         </p>
       </div>
     </div>
@@ -217,8 +219,8 @@ const handleCreateModal = () => {
     >
       <div class="grow">
         <p class="text-slate-500 dark:text-zink-200">
-          Showing <b class="showing">{{ getEndIndex }}</b> of
-          <b class="total-records">{{ totalItems }}</b> Results
+          {{ t('e-showing') }} <b class="showing">{{ getEndIndex }}</b> {{ t('e-of') }}
+          <b class="total-records">{{ totalItems }}</b> {{ t('e-results') }}
         </p>
       </div>
 
@@ -231,10 +233,10 @@ const handleCreateModal = () => {
         >
           <template #prev>
             <ChevronLeft class="size-4 mr-1 rtl:rotate-180" />
-            Prev
+            {{ t('e-prev') }}
           </template>
           <template #next>
-            Next
+            {{ t('e-next') }}
             <ChevronRight class="size-4 ml-1 rtl:rotate-180" />
           </template>
         </TPagination>

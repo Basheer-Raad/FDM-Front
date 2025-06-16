@@ -2,6 +2,9 @@
 import { computed, ref, onMounted, watch } from "vue";
 import { X } from "lucide-vue-next";
 import { apiService } from "@/app/service/httpService/apiService";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 const emit = defineEmits(["update:modelValue", "handleSubmit"]);
 
@@ -68,9 +71,9 @@ watch(
 );
 
 const statusOptions = [
-  { label: "Pending", value: "pending" },
-  { label: "In Progress", value: "in_progress" },
-  { label: "Completed", value: "completed" },
+  { label: t("t-pending"), value: "pending" },
+  { label: t("t-in-progress"), value: "in_progress" },
+  { label: t("t-completed"), value: "completed" },
 ];
 
 const serviceOptions = [
@@ -212,7 +215,7 @@ const handleFileChange = (event: Event) => {
         class="flex items-center justify-between p-4 border-b dark:border-zink-500"
       >
         <h5 class="text-16" id="addTodoLabel">
-          {{ props.dataEdit ? "Edit Todo" : "Create Todo" }}
+          {{ props.dataEdit ? t('t-edit-todo') : t('t-create-todo') }}
         </h5>
         <button
           @click="showModal = false"
@@ -228,46 +231,38 @@ const handleFileChange = (event: Event) => {
         <form @submit.prevent class="create-form" id="create-form">
           <div class="grid grid-cols-1 gap-4 xl:grid-cols-12">
             <div class="xl:col-span-12">
-              <label class="inline-block mb-2 text-base font-medium"
-                >Todo</label
-              >
+              <label class="inline-block mb-2 text-base font-medium">{{ t('t-todo') }}</label>
               <select
                 v-model="todoData.todo"
                 required
                 class="form-select border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 dark:bg-zink-700 dark:text-zink-100"
               >
-                <option value="install_meter">Install Meter</option>
-                <option value="repair_meter">Repair Meter</option>
+                <option value="install_meter">{{ t('t-install-meter') }}</option>
+                <option value="repair_meter">{{ t('t-repair-meter') }}</option>
               </select>
             </div>
             <div class="xl:col-span-12">
-              <label class="block mb-2 text-base font-medium"
-                >Description (Optional)</label
-              >
+              <label class="block mb-2 text-base font-medium">{{ t('t-description') }}</label>
               <textarea
                 v-model="todoData.description"
                 class="block w-full form-textarea border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 dark:bg-zink-700 dark:text-zink-100 mb-2"
                 rows="3"
-                placeholder="Enter task description..."
+                :placeholder="t('t-enter-task-description')"
               ></textarea>
             </div>
             <div class="xl:col-span-12">
-              <label class="inline-block mb-2 text-base font-medium"
-                >Status</label
-              >
+              <label class="inline-block mb-2 text-base font-medium">{{ t('t-status') }}</label>
               <select
                 v-model="todoData.status"
                 class="form-select border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 dark:bg-zink-700 dark:text-zink-100"
               >
-                <option value="pending">Pending</option>
-                <option value="in_progress">In Progress</option>
-                <option value="completed">Completed</option>
+                <option v-for="option in statusOptions" :key="option.value" :value="option.value">
+                  {{ option.label }}
+                </option>
               </select>
             </div>
             <div class="xl:col-span-12">
-              <label class="inline-block mb-2 text-base font-medium"
-                >User</label
-              >
+              <label class="inline-block mb-2 text-base font-medium">{{ t('t-user') }}</label>
               <select
                 v-model="todoData.user_id"
                 required
@@ -283,9 +278,7 @@ const handleFileChange = (event: Event) => {
               </select>
             </div>
             <div class="xl:col-span-12">
-              <label class="inline-block mb-2 text-base font-medium"
-                >Customer</label
-              >
+              <label class="inline-block mb-2 text-base font-medium">{{ t('t-customer') }}</label>
               <select
                 v-model="todoData.customer"
                 required
@@ -301,9 +294,7 @@ const handleFileChange = (event: Event) => {
               </select>
             </div>
             <div class="xl:col-span-12">
-              <label class="inline-block mb-2 text-base font-medium"
-                >Meter</label
-              >
+              <label class="inline-block mb-2 text-base font-medium">{{ t('t-meter') }}</label>
               <select
                 v-model="todoData.meters"
                 class="form-select border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 dark:bg-zink-700 dark:text-zink-100"
@@ -318,9 +309,7 @@ const handleFileChange = (event: Event) => {
               </select>
             </div>
             <div class="xl:col-span-12" v-if="isServiceEnabled">
-              <label class="inline-block mb-2 text-base font-medium"
-                >Service</label
-              >
+              <label class="inline-block mb-2 text-base font-medium">{{ t('t-service') }}</label>
               <select
                 v-model="todoData.service"
                 required
@@ -336,9 +325,7 @@ const handleFileChange = (event: Event) => {
               </select>
             </div>
             <div class="xl:col-span-12">
-              <label class="inline-block mb-2 text-base font-medium"
-                >Media</label
-              >
+              <label class="inline-block mb-2 text-base font-medium">{{ t('t-media') }}</label>
               <input type="file" @change="handleFileChange" />
             </div>
           </div>
@@ -349,10 +336,10 @@ const handleFileChange = (event: Event) => {
               id="close-modal"
               @click="showModal = false"
             >
-              Cancel
+              {{ t('t-cancel') }}
             </TButton>
             <TButton type="button" @click.prevent="handleSubmit(todoData)">
-              {{ props.dataEdit ? "Save" : "Create Todo" }}
+              {{ props.dataEdit ? t('t-save') : t('t-create-todo') }}
             </TButton>
           </div>
         </form>

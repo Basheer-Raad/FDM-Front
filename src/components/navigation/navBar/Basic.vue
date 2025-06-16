@@ -29,7 +29,7 @@ const basicNav = ref("Home");
       id="navbar7"
       class="absolute inset-x-0 z-20 items-center hidden py-3 bg-white shadow-lg dark:bg-zink-600 dark:md:bg-transparent md:z-0 navbar-menu rounded-b-md md:shadow-none md:flex top-full ltr:ml-auto rtl:mr-auto md:relative md:bg-transparent md:rounded-none md:top-auto md:py-0"
     >
-      <li v-for="item in navData">
+    <li v-for="item in navData" class="mx-2">
         <router-link
           v-if="item === 'Home'"
           to="/"
