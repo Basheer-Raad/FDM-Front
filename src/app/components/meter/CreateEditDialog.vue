@@ -1,6 +1,9 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from "vue";
 import { X } from "lucide-vue-next";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 const emit = defineEmits(["update:modelValue", "handleSubmit"]);
 
@@ -51,7 +54,7 @@ watch(
     <template #content>
       <div class="flex items-center justify-between p-4 border-b dark:border-zink-500">
         <h5 class="text-16">
-          {{ props.dataEdit ? "Edit Meter" : "Add Meter" }}
+          {{ props.dataEdit ? t('m-edit-meter') : t('m-add-meter') }}
         </h5>
         <button
           @click="showModal = false"
@@ -71,15 +74,15 @@ watch(
               <TInputField
                 id="meterId"
                 disabled
-                label="ID"
-                :modelValue="meterData.id ? '#' + meterData.id : 'Auto'"
+                :label="t('m-id')"
+                :modelValue="meterData.id ? '#' + meterData.id : t('m-auto')"
                 hide-details
               />
             </div>
             <div class="xl:col-span-12">
               <TInputField
-                label="Type"
-                placeholder="Enter meter type"
+                :label="t('m-type')"
+                :placeholder="t('m-enter-meter-type')"
                 v-model="meterData.type"
                 hide-details
                 required
@@ -87,8 +90,8 @@ watch(
             </div>
             <div class="xl:col-span-12">
               <TInputField
-                label="Serial Number"
-                placeholder="Enter serial number"
+                :label="t('m-serial-number')"
+                :placeholder="t('m-enter-serial-number')"
                 v-model="meterData.serial_number"
                 hide-details
                 required
@@ -96,25 +99,25 @@ watch(
             </div>
             <div class="xl:col-span-12">
               <TInputField
-                label="Customer ID"
+                :label="t('m-customer-id')"
                 type="number"
                 v-model="meterData.customer_id"
-                placeholder="Enter customer ID"
+                :placeholder="t('m-enter-customer-id')"
                 hide-details
                 required
               />
             </div>
             <div class="xl:col-span-12">
               <TInputField
-                label="Location"
-                placeholder="Enter location"
+                :label="t('m-location')"
+                :placeholder="t('m-enter-location')"
                 v-model="meterData.location"
                 hide-details
                 required
               />
             </div>
             <div class="xl:col-span-12">
-              <label class="inline-block mb-2 text-base font-medium">Status</label>
+              <label class="inline-block mb-2 text-base font-medium">{{ t('m-status') }}</label>
               <select
                 v-model="meterData.status"
                 class="form-select border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 dark:bg-zink-700 dark:text-zink-100"
@@ -126,7 +129,7 @@ watch(
             </div>
             <div class="xl:col-span-12">
               <TInputField
-                label="Installation Date"
+                :label="t('m-installation-date')"
                 type="date"
                 v-model="meterData.installed_at"
                 hide-details
@@ -136,10 +139,10 @@ watch(
           </div>
           <div class="flex justify-end gap-2 mt-4">
             <TButton variant="ghost" color="red" @click="showModal = false">
-              Cancel
+              {{ t('m-cancel') }}
             </TButton>
             <TButton type="submit">
-              {{ props.dataEdit ? "Save" : "Add Meter" }}
+              {{ props.dataEdit ? t('m-save') : t('m-add-meter') }}
             </TButton>
           </div>
         </form>

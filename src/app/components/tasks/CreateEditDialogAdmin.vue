@@ -209,30 +209,40 @@ onMounted(() => {
           <div class="grid grid-cols-1 gap-4 xl:grid-cols-12">
             <div class="xl:col-span-12">
               <label class="inline-block mb-2 text-base font-medium">{{ t('t-todo') }}</label>
-              <select
-                v-model="todoData.todo"
-                required
-                class="form-select border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 dark:bg-zink-700 dark:text-zink-100"
-              >
-                <option value="install_meter">Install Meter</option>
-                <option value="repair_meter">Repair Meter</option>
-              </select>
+              <div class="relative">
+                <select
+                  v-model="todoData.todo"
+                  required
+                  class="form-select border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 dark:bg-zink-700 dark:text-zink-100 pr-8 cursor-pointer"
+                >
+                  <option value="install_meter">Install Meter</option>
+                  <option value="repair_meter">Repair Meter</option>
+                </select>
+                <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 text-xs">
+                  ▼
+                </span>
+              </div>
             </div>
             <div class="xl:col-span-12" v-if="isServiceEnabled">
               <label class="inline-block mb-2 text-base font-medium">{{ t('t-service') }}</label>
-              <select
-                v-model="todoData.service"
-                required
-                class="form-select border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 dark:bg-zink-700 dark:text-zink-100"
-              >
-                <option
-                  v-for="service in serviceOptions"
-                  :key="service.value"
-                  :value="service.value"
+              <div class="relative">
+                <select
+                  v-model="todoData.service"
+                  required
+                  class="form-select border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 dark:bg-zink-700 dark:text-zink-100 pr-8 cursor-pointer"
                 >
-                  {{ service.label }}
-                </option>
-              </select>
+                  <option
+                    v-for="service in serviceOptions"
+                    :key="service.value"
+                    :value="service.value"
+                  >
+                    {{ service.label }}
+                  </option>
+                </select>
+                <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 text-xs">
+                  ▼
+                </span>
+              </div>
             </div>
             <div class="xl:col-span-12">
               <label class="block mb-2 text-base font-medium">{{ t('t-description') }}</label>
@@ -245,63 +255,81 @@ onMounted(() => {
             </div>
             <div class="xl:col-span-12">
               <label class="inline-block mb-2 text-base font-medium">{{ t('t-status') }}</label>
-              <select
-                v-model="todoData.status"
-                class="form-select border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 dark:bg-zink-700 dark:text-zink-100"
-              >
-                <option v-for="option in statusOptions" :key="option.value" :value="option.value">
-                  {{ option.label }}
-                </option>
-              </select>
+              <div class="relative">
+                <select
+                  v-model="todoData.status"
+                  class="form-select border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 dark:bg-zink-700 dark:text-zink-100 pr-8 cursor-pointer"
+                >
+                  <option v-for="option in statusOptions" :key="option.value" :value="option.value">
+                    {{ option.label }}
+                  </option>
+                </select>
+                <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 text-xs">
+                  ▼
+                </span>
+              </div>
             </div>
             <div class="xl:col-span-12">
               <label class="inline-block mb-2 text-base font-medium">{{ t('t-user') }}</label>
-              <select
-                v-model="todoData.user_id"
-                required
-                class="form-select border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 dark:bg-zink-700 dark:text-zink-100"
-              >
-                <option
-                  v-for="user in userList"
-                  :key="user.id"
-                  :value="user.id"
+              <div class="relative">
+                <select
+                  v-model="todoData.user_id"
+                  required
+                  class="form-select border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 dark:bg-zink-700 dark:text-zink-100 pr-8 cursor-pointer"
                 >
-                  {{ user.name }}
-                </option>
-              </select>
+                  <option
+                    v-for="user in userList"
+                    :key="user.id"
+                    :value="user.id"
+                  >
+                    {{ user.name }}
+                  </option>
+                </select>
+                <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 text-xs">
+                  ▼
+                </span>
+              </div>
             </div>
             <div class="xl:col-span-12">
               <label class="inline-block mb-2 text-base font-medium">{{ t('t-customer') }}</label>
-              <select
-                v-model="todoData.customer"
-                required
-                class="form-select border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 dark:bg-zink-700 dark:text-zink-100"
-              >
-                <option
-                  v-for="customer in customerList"
-                  :key="customer.id"
-                  :value="customer"
+              <div class="relative">
+                <select
+                  v-model="todoData.customer"
+                  required
+                  class="form-select border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 dark:bg-zink-700 dark:text-zink-100 pr-8 cursor-pointer"
                 >
-                  {{ customer.customerName }}
-                </option>
-              </select>
+                  <option
+                    v-for="customer in customerList"
+                    :key="customer.id"
+                    :value="customer"
+                  >
+                    {{ customer.customerName }}
+                  </option>
+                </select>
+                <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 text-xs">
+                  ▼
+                </span>
+              </div>
             </div>
             <div class="xl:col-span-12">
               <label class="inline-block mb-2 text-base font-medium">{{ t('t-meter') }}</label>
-              <select
-                v-model="todoData.meters"
-                :disabled="!isMeterEnabled"
-                class="form-select border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 dark:bg-zink-700 dark:text-zink-100"
-                :class="{ 'bg-gray-100': !isMeterEnabled }"
-              >
-                <option
-                  v-for="meter in meterOptions"
-                  :key="meter.id"
-                  :value="meter"
+              <div class="relative">
+                <select
+                  v-model="todoData.meters"
+                  :disabled="!isMeterEnabled"
+                  class="form-select border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 dark:bg-zink-700 dark:text-zink-100 pr-8 cursor-pointer"
+                  :class="{ 'bg-gray-100': !isMeterEnabled }"
                 >
-                  {{ meter.meterNo }}
-                </option>
-              </select>
+                  <option
+                    v-for="meter in meterOptions"
+                    :key="meter.id"
+                    :value="meter"
+                  >
+                    {{ meter.meterNo }}
+                  </option>
+                </select>
+                
+              </div>
             </div>
           </div>
           <div class="flex justify-end gap-2 mt-4">

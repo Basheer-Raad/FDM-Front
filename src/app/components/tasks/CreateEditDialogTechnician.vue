@@ -41,7 +41,19 @@ const showModal = computed({
   },
 });
 
-const todoData = ref({
+interface TodoFormData {
+  todo: any;
+  status: any;
+  user_id: any;
+  customer: any;
+  mediaPath: any;
+  service: any;
+  meters: any;
+  description: any;
+}
+
+const todoData = ref<TodoFormData>({
+  todo: props.event.todo || "",
   ...props.event,
   customer: props.event.customer || null,
   mediaPath: props.event.mediaPath || "",
@@ -59,7 +71,6 @@ watch(
     if (typeof customerObj === "number" || typeof customerObj === "string") {
       customerObj = customerList.value.find((c) => c.id == customerObj) || null;
     }
-
     // Find the correct meter object
     let meterObj = null;
     if (customerObj && newVal.meters) {
@@ -70,9 +81,10 @@ watch(
         meterObj = meterList.find((m: any) => m.id == newVal.meters || m.meterNo == newVal.meters) || null;
       }
     }
-
     todoData.value = {
-      ...newVal,
+      todo: newVal.todo || "",
+      status: newVal.status || "pending",
+      user_id: newVal.user_id || "",
       customer: customerObj,
       meters: meterObj,
       service: newVal.service || "",
@@ -132,8 +144,9 @@ watch(
     if (newVal === "install_meter") {
       try {
         const response = await apiService.get("meter/findNoInstallPage");
-        console.log("Install meter API response:", response.data.content);
-        meterInstallOptions.value = response.data.content || [];
+        const data = (response as any).data?.content || [];
+        console.log("Install meter API response:", data);
+        meterInstallOptions.value = data;
       } catch (error) {
         console.error("Error fetching install meter options:", error);
         meterInstallOptions.value = [];
@@ -228,7 +241,7 @@ const handleFileChange = (event: Event) => {
         class="flex items-center justify-between p-4 border-b dark:border-zink-500"
       >
         <h5 class="text-16" id="addTodoLabel">
-          {{ props.dataEdit ? 'Edit Todo' : 'Create Todo' }}
+          {{ props.dataEdit ? t('t-edit-todo') : t('t-create-todo') }}
         </h5>
         <button
           @click="showModal = false"
@@ -244,7 +257,7 @@ const handleFileChange = (event: Event) => {
         <form @submit.prevent class="create-form" id="create-form">
           <div class="grid grid-cols-1 gap-4 xl:grid-cols-12">
             <div class="xl:col-span-12">
-              <label class="inline-block mb-2 text-base font-medium">Todo</label>
+              <label class="inline-block mb-2 text-base font-medium">{{ t('t-todo') }}</label>
               <select
                 v-model="todoData.todo"
                 required
@@ -255,16 +268,16 @@ const handleFileChange = (event: Event) => {
               </select>
             </div>
             <div class="xl:col-span-12">
-              <label class="block mb-2 text-base font-medium">Description</label>
+              <label class="block mb-2 text-base font-medium">{{ t('t-description') }}</label>
               <textarea
                 v-model="todoData.description"
                 class="block w-full form-textarea border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 dark:bg-zink-700 dark:text-zink-100 mb-2"
                 rows="3"
-                placeholder="Enter task description"
+                :placeholder="t('t-enter-task-description')"
               ></textarea>
             </div>
             <div class="xl:col-span-12">
-              <label class="inline-block mb-2 text-base font-medium">Status</label>
+              <label class="inline-block mb-2 text-base font-medium">{{ t('t-status') }}</label>
               <select
                 v-model="todoData.status"
                 class="form-select border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 dark:bg-zink-700 dark:text-zink-100"
@@ -275,7 +288,7 @@ const handleFileChange = (event: Event) => {
               </select>
             </div>
             <div class="xl:col-span-12">
-              <label class="inline-block mb-2 text-base font-medium">User</label>
+              <label class="inline-block mb-2 text-base font-medium">{{ t('t-user') }}</label>
               <select
                 v-model="todoData.user_id"
                 required
@@ -291,7 +304,7 @@ const handleFileChange = (event: Event) => {
               </select>
             </div>
             <div class="xl:col-span-12">
-              <label class="inline-block mb-2 text-base font-medium">Customer</label>
+              <label class="inline-block mb-2 text-base font-medium">{{ t('t-customer') }}</label>
               <select
                 v-model="todoData.customer"
                 required
@@ -307,7 +320,7 @@ const handleFileChange = (event: Event) => {
               </select>
             </div>
             <div class="xl:col-span-12">
-              <label class="inline-block mb-2 text-base font-medium">Meter</label>
+              <label class="inline-block mb-2 text-base font-medium">{{ t('t-meter') }}</label>
               <select
                 v-model="todoData.meters"
                 class="form-select border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 dark:bg-zink-700 dark:text-zink-100"
@@ -322,7 +335,7 @@ const handleFileChange = (event: Event) => {
               </select>
             </div>
             <div class="xl:col-span-12" v-if="isServiceEnabled">
-              <label class="inline-block mb-2 text-base font-medium">Service</label>
+              <label class="inline-block mb-2 text-base font-medium">{{ t('t-service') }}</label>
               <select
                 v-model="todoData.service"
                 required
@@ -338,8 +351,8 @@ const handleFileChange = (event: Event) => {
               </select>
             </div>
             <div class="xl:col-span-12">
-              <label class="inline-block mb-2 text-base font-medium">Media</label>
-              <input type="file" @change="handleFileChange" />
+              <label class="inline-block mb-2 text-base font-medium mr-2 ml-2">{{ t('t-media') }}</label>
+              <input type="file"  @change="handleFileChange" />
             </div>
           </div>
           <div class="flex justify-end gap-2 mt-4">
@@ -349,10 +362,10 @@ const handleFileChange = (event: Event) => {
               id="close-modal"
               @click="showModal = false"
             >
-              Cancel
+              {{ t('t-cancel') }}
             </TButton>
             <TButton type="button" @click.prevent="handleSubmit(todoData)">
-              {{ props.dataEdit ? 'Save' : 'Create Todo' }}
+              {{ props.dataEdit ? t('t-save') : t('t-create-todo') }}
             </TButton>
           </div>
         </form>
