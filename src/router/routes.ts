@@ -24,10 +24,10 @@ const accountRoutes = [
 const dashboardRoutes = [
   {
     path: "/",
-    name: "ECommerce",
-    component: () => import("@/views/dashboard/Ecommerce.vue"),
+    name: "Home",
+    component: () => import("@/views/Welcome.vue"),
     meta: {
-      title: "ECommerce",
+      title: "Home",
       authRequired: true,
       layout: DefaultLayout
     }
@@ -1620,16 +1620,16 @@ export const routes = [
       layout: DefaultLayout
     }
   },
-  {
-    path: "/welcome",
-    name: "Welcome",
-    component: () => import("@/views/Welcome.vue"),
-    meta: {
-      title: "Welcome",
-      authRequired: true,
-      layout: DefaultLayout
-    }
-  },
+  // {
+  //   path: "/welcome",
+  //   name: "Welcome",
+  //   component: () => import("@/views/Welcome.vue"),
+  //   meta: {
+  //     title: "Welcome",
+  //     authRequired: true,
+  //     layout: DefaultLayout
+  //   }
+  // },
   {
     path: "/admin-tasks",
     name: "AdminTasks",
