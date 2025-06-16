@@ -125,7 +125,7 @@ const handleEditModal = (task) => {
     id: task.id,
     todo: task.todo,
     status: task.status,
-    user_id: task.user_id || task.userId,
+    userId: task.user_id || task.userId,
     customer: task.customer?.id || task.customer,
     mediaPath: task.mediaPath || "",
     service: task.service || "",

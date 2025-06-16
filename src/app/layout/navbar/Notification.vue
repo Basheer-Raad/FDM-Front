@@ -31,7 +31,7 @@ const getParsedData = computed(() => notificationData);
             <div v-if="getParsedData.length === 0" class="p-4 text-center text-slate-500 dark:text-zink-300">
               No notifications
             </div>
-            <!-- Notification items would go here if any existed -->
+          
           </div>
         </simplebar>
       </div>

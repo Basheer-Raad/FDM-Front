@@ -169,5 +169,13 @@
   "t-level-3.2": "Level 3.2",
   "t-components": "Components",
   "t-video-player": "Video Player",
-  "t-more": "More"
+  "t-more": "More",
+  "welcome-title": "Welcome to Smart Meter Electricity",
+  "welcome-greeting": "Hello {username}, we're glad to have you back!",
+  "welcome-getting-started": "Getting Started",
+  "welcome-quick-links": "Here are some quick links to help you get started:",
+  "welcome-tasks-title": "Tasks",
+  "welcome-tasks-desc": "View your analytics and statistics",
+  "welcome-employees-title": "Employees",
+  "welcome-employees-desc": "Manage your users and permissions"
 }

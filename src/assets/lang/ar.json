@@ -168,5 +168,13 @@
   "t-level-3.2": "المستوى 3.2",
   "t-components": "عناصر",
   "t-video-player": "مشغل فديوهات",
-  "t-more": "أكثر"
+  "t-more": "أكثر",
+  "welcome-title": "مرحبًا بك في عدادات الكهرباء الذكية",
+  "welcome-greeting": "مرحبًا {username}، يسعدنا عودتك!",
+  "welcome-getting-started": "البدء",
+  "welcome-quick-links": "إليك بعض الروابط السريعة لمساعدتك على البدء:",
+  "welcome-tasks-title": "المهام",
+  "welcome-tasks-desc": "عرض تحليلاتك وإحصاءاتك",
+  "welcome-employees-title": "الموظفين",
+  "welcome-employees-desc": "إدارة المستخدمين والصلاحيات"
 }

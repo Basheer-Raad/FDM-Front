@@ -25,7 +25,7 @@ export default {
   darkMode: ["class", '[data-mode="dark"]'],
   theme: {
     fontFamily: {
-      public: ['"Public Sans", sans-serif'],
+      public: ['"Tajawal", sans-serif'],
       tourney: ['"Tourney", sans-serif'],
       remix: ["remixicon"]
     },
