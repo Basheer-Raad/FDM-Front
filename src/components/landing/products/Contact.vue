@@ -164,9 +164,9 @@ onBeforeUnmount(() => {
     >
       <p>
         {{ currentYear }}
-        © Tailwick. Design & Develop by
+        © LASTRON. Design & Develop by
         <a href="#!" class="underline text-slate-800 dark:text-zinc-100"
-          >Themesdesign</a
+          >LASTRON</a
         >
       </p>
     </div>

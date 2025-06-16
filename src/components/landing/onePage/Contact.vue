@@ -228,9 +228,9 @@ onBeforeUnmount(() => {
       <div class="mt-12 text-center text-slate-400 dark:text-zink-200 text-16">
         <p>
           {{ currentYear }}
-          © Tailwick. Design & Develop by
+          © LASTRON. Design & Develop by
           <a href="#!" class="underline text-slate-300 dark:text-zink-100"
-            >Themesdesign</a
+            >LASTRON</a
           >
         </p>
       </div>

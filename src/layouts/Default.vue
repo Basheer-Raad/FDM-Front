@@ -26,12 +26,8 @@ const currentYear = computed(() => new Date().getFullYear());
         <div
           class="grid items-center grid-cols-1 text-center lg:grid-cols-2 text-slate-400 dark:text-zink-200 ltr:lg:text-left rtl:lg:text-right"
         >
-          <div>{{ currentYear }} © Tailwick.</div>
-          <div class="hidden lg:block">
-            <div class="ltr:text-right rtl:text-left">
-              Design &amp; Develop by Themesdesign
-            </div>
-          </div>
+          <div>{{ currentYear }} © Lastron.</div>
+          
         </div>
       </div>
     </footer>
