@@ -262,6 +262,17 @@
 "m-of": "من",
 "m-results": "نتائج",
 "m-prev": "السابق",
-"m-next": "التالي"
+"m-next": "التالي",
+"t-description": "الوصف",
+"t-enter-description": "أدخل الوصف",
+"t-edit-todo": "تعديل المهمة",
+"t-create-todo": "إضافة مهمة",
+"t-pending": "قيد الإنتظار",
+"t-in-progress": "قيد التنفيذ",
+"t-completed": "مكتمل",
+"t-enter-task-description": "...أدخل وصف المهمة",
+"t-cancel": "إلغاء",
+"t-meter": "العداد"
+
 
 }

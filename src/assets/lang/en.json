@@ -258,5 +258,11 @@
   "m-of": "of",
   "m-results": "Results",
   "m-prev": "Prev",
-  "m-next": "Next"
+  "m-next": "Next",
+  "t-pending": "Pending",
+  "t-in-progress": "In Progress",
+  "t-completed": "Completed",
+  "t-enter-task-description": "Enter task description...",
+  "t-cancel": "Cancel",
+  "t-meter": "Meter"
 }

@@ -2,6 +2,7 @@
 import { computed, ref, onMounted, watch, reactive } from "vue";
 import { X } from "lucide-vue-next";
 import { apiService } from "@/app/service/httpService/apiService";
+import { useI18n } from "vue-i18n";
 
 const emit = defineEmits(["update:modelValue", "handleSubmit"]);
 
@@ -36,8 +37,12 @@ const showModal = computed({
   },
 });
 
+const { t } = useI18n();
+
 const todoData = reactive({
-  ...props.event,
+  todo: props.event.todo || "",
+  status: props.event.status || "pending",
+  user_id: props.event.user_id || "",
   customer: props.event.customer || null,
   mediaPath: props.event.mediaPath || "",
   service: props.event.service || "",
@@ -53,18 +58,23 @@ watch(
       customerObj = customerList.value.find((c) => c.id == customerObj) || null;
     }
     Object.assign(todoData, {
-      ...newVal,
+      todo: newVal.todo || "",
+      status: newVal.status || "pending",
+      user_id: newVal.user_id || "",
       customer: customerObj,
+      mediaPath: newVal.mediaPath || "",
       service: newVal.service !== undefined ? newVal.service : todoData.service,
+      meters: newVal.meters || [],
+      description: newVal.description || "",
     });
   },
   { immediate: true }
 );
 
 const statusOptions = [
-  { label: "Pending", value: "pending" },
-  { label: "In Progress", value: "in_progress" },
-  { label: "Completed", value: "completed" },
+  { label: t('pending'), value: 'pending' },
+  { label: t('in-progress'), value: 'in_progress' },
+  { label: t('completed'), value: 'completed' },
 ];
 
 const serviceOptions = [
@@ -99,7 +109,7 @@ const isServiceEnabled = computed(() => {
 const fetchUsers = async () => {
   try {
     const data = await apiService.get("/users");
-    userList.value = data;
+    userList.value = data as { id: number; name: string }[];
   } catch (error) {
     console.error("Error fetching users:", error);
   }
@@ -108,9 +118,9 @@ const fetchUsers = async () => {
 const fetchCustomers = async () => {
   try {
     const response = await apiService.get("/getCustomers");
-    const data = Array.isArray(response.data)
-      ? response.data
-      : response.data?.data || [];
+    const data = Array.isArray((response as any).data)
+      ? (response as any).data
+      : (response as any).data?.data || [];
     customerList.value = data;
   } catch (error) {
     console.error("Error fetching customers:", error);
@@ -154,6 +164,26 @@ const handleSubmit = async (data: any) => {
     emit("handleSubmit", { success: false, error });
   }
 };
+
+const meterInstallOptions = ref<any[]>([]);
+
+const fetchInstallMeterOptions = async () => {
+  try {
+    const response = await apiService.get("meter/findNoInstallPage");
+    const data = (response as any).data?.content || [];
+    console.log("Install meter API response:", data);
+    meterInstallOptions.value = data;
+  } catch (error) {
+    console.error("Error fetching install meter options:", error);
+    meterInstallOptions.value = [];
+  }
+};
+
+onMounted(() => {
+  fetchUsers();
+  fetchCustomers();
+  fetchInstallMeterOptions();
+});
 </script>
 <template>
   <TModal v-model="showModal">
@@ -162,7 +192,7 @@ const handleSubmit = async (data: any) => {
         class="flex items-center justify-between p-4 border-b dark:border-zink-500"
       >
         <h5 class="text-16" id="addTodoLabel">
-          {{ props.dataEdit ? "Edit Todo" : "Create Todo" }}
+          {{ props.dataEdit ? t('t-edit-todo') : t('t-create-todo') }}
         </h5>
         <button
           @click="showModal = false"
@@ -178,9 +208,7 @@ const handleSubmit = async (data: any) => {
         <form @submit.prevent class="create-form" id="create-form">
           <div class="grid grid-cols-1 gap-4 xl:grid-cols-12">
             <div class="xl:col-span-12">
-              <label class="inline-block mb-2 text-base font-medium"
-                >Todo</label
-              >
+              <label class="inline-block mb-2 text-base font-medium">{{ t('t-todo') }}</label>
               <select
                 v-model="todoData.todo"
                 required
@@ -191,9 +219,7 @@ const handleSubmit = async (data: any) => {
               </select>
             </div>
             <div class="xl:col-span-12" v-if="isServiceEnabled">
-              <label class="inline-block mb-2 text-base font-medium"
-                >Service</label
-              >
+              <label class="inline-block mb-2 text-base font-medium">{{ t('t-service') }}</label>
               <select
                 v-model="todoData.service"
                 required
@@ -209,33 +235,27 @@ const handleSubmit = async (data: any) => {
               </select>
             </div>
             <div class="xl:col-span-12">
-              <label class="block mb-2 text-base font-medium"
-                >Description (Optional)</label
-              >
+              <label class="block mb-2 text-base font-medium">{{ t('t-description') }}</label>
               <textarea
                 v-model="todoData.description"
-                class="block w-full form-textarea border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 dark:bg-zink-700 dark:text-zink-100 mb-2"
+                class="block w-full form-textarea border-slate-200 p-2 dark:border-zink-500 focus:outline-none focus:border-custom-500 dark:bg-zink-700 dark:text-zink-100 mb-2"
                 rows="3"
-                placeholder="Enter task description..."
+                :placeholder="t('t-enter-task-description')"
               ></textarea>
             </div>
             <div class="xl:col-span-12">
-              <label class="inline-block mb-2 text-base font-medium"
-                >Status</label
-              >
+              <label class="inline-block mb-2 text-base font-medium">{{ t('t-status') }}</label>
               <select
                 v-model="todoData.status"
                 class="form-select border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 dark:bg-zink-700 dark:text-zink-100"
               >
-                <option value="pending">Pending</option>
-                <option value="in_progress">In Progress</option>
-                <option value="completed">Completed</option>
+                <option v-for="option in statusOptions" :key="option.value" :value="option.value">
+                  {{ option.label }}
+                </option>
               </select>
             </div>
             <div class="xl:col-span-12">
-              <label class="inline-block mb-2 text-base font-medium"
-                >User</label
-              >
+              <label class="inline-block mb-2 text-base font-medium">{{ t('t-user') }}</label>
               <select
                 v-model="todoData.user_id"
                 required
@@ -251,9 +271,7 @@ const handleSubmit = async (data: any) => {
               </select>
             </div>
             <div class="xl:col-span-12">
-              <label class="inline-block mb-2 text-base font-medium"
-                >Customer</label
-              >
+              <label class="inline-block mb-2 text-base font-medium">{{ t('t-customer') }}</label>
               <select
                 v-model="todoData.customer"
                 required
@@ -269,9 +287,7 @@ const handleSubmit = async (data: any) => {
               </select>
             </div>
             <div class="xl:col-span-12">
-              <label class="inline-block mb-2 text-base font-medium"
-                >Meter</label
-              >
+              <label class="inline-block mb-2 text-base font-medium">{{ t('t-meter') }}</label>
               <select
                 v-model="todoData.meters"
                 :disabled="!isMeterEnabled"
@@ -287,7 +303,6 @@ const handleSubmit = async (data: any) => {
                 </option>
               </select>
             </div>
-           
           </div>
           <div class="flex justify-end gap-2 mt-4">
             <TButton
@@ -296,10 +311,10 @@ const handleSubmit = async (data: any) => {
               id="close-modal"
               @click="showModal = false"
             >
-              Cancel
+              {{ t('t-cancel') }}
             </TButton>
             <TButton type="button" @click.prevent="handleSubmit(todoData)">
-              {{ props.dataEdit ? "Save" : "Create Todo" }}
+              {{ props.dataEdit ? t('t-save') : t('t-create-todo') }}
             </TButton>
           </div>
         </form>
