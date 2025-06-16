@@ -59,12 +59,25 @@ watch(
     if (typeof customerObj === "number" || typeof customerObj === "string") {
       customerObj = customerList.value.find((c) => c.id == customerObj) || null;
     }
+
+    // Find the correct meter object
+    let meterObj = null;
+    if (customerObj && newVal.meters) {
+      const meterList = customerObj.infoMeterList || [];
+      if (typeof newVal.meters === "object" && newVal.meters !== null) {
+        meterObj = meterList.find((m: any) => m.id === newVal.meters.id) || newVal.meters;
+      } else {
+        meterObj = meterList.find((m: any) => m.id == newVal.meters || m.meterNo == newVal.meters) || null;
+      }
+    }
+
     todoData.value = {
       ...newVal,
       customer: customerObj,
+      meters: meterObj,
       service: newVal.service || "",
-      meters: newVal.meters || "",
       description: newVal.description || "",
+      mediaPath: newVal.mediaPath || "",
     };
   },
   { immediate: true }
@@ -168,7 +181,7 @@ const handleSubmit = async (data: any) => {
   try {
     const submitData = {
       ...data,
-      meters: data.todo === "install_meter" ? [] : data.meters,
+      meters: data.todo === "install_meter" ? data.meters : data.meters,
       media: selectedFile.value,
     };
     console.log(submitData);
