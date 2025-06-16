@@ -177,5 +177,21 @@
   "welcome-tasks-title": "Tasks",
   "welcome-tasks-desc": "View your analytics and statistics",
   "welcome-employees-title": "Employees",
-  "welcome-employees-desc": "Manage your users and permissions"
+  "welcome-employees-desc": "Manage your users and permissions",
+  "t-id": "ID",
+  "t-todo": "Todo",
+  "t-customer": "Customer",
+  "t-service": "Service",
+  "t-meter-no": "Meter No",
+  "t-status": "Status",
+  "t-user": "User",
+  "t-add-task": "Add Task",
+  "t-search-tasks": "Search tasks...",
+  "t-no-result-found": "Sorry! No Result Found",
+  "t-no-todos-match": "We've searched but did not find any todos matching your search.",
+  "t-showing": "Showing",
+  "t-of": "of",
+  "t-results": "Results",
+  "t-prev": "Prev",
+  "t-next": "Next"
 }
