@@ -35,7 +35,7 @@ const tableHeader = [
   { label: "Meter No", value: "meterNo", align: "left" },
   { label: "Status", value: "status", align: "left" },
   { label: "User", value: "user", align: "left" },
-  // { label: "Media", value: "mediaPath", align: "left" },
+  
 ];
 
 const tableConfig = {
@@ -44,7 +44,7 @@ const tableConfig = {
 };
 
 // Submitted state
-const submitted = ref(false);
+
 
 // Todo modal states
 const dataEdit = ref(false);
