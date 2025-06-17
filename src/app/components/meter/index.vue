@@ -129,7 +129,7 @@ const updateMeterStatus = (data: { id: number; status: string }) => {
 </script>
 
 <template>
-  <TCard id="meterTable">
+  <TCard id="meterTable" class="mt-8">
     <div class="flex items-center gap-3 mb-4">
       <h6 class="text-15 grow">
         {{ t('m-meters') }} (<b>{{ meterList.length }}</b

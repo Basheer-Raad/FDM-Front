@@ -134,7 +134,7 @@ const handleTaskSubmit = async (result) => {
 </script>
 
 <template>
-  <TCard id="todoTable">
+  <TCard id="todoTable" class="mt-8">
     <div class="flex items-center gap-3 mb-4">
       <h6 class="text-15 grow">
         {{ t('t-tasks-technician') }} (<b>{{ todoList.length }}</b

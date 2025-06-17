@@ -319,9 +319,9 @@ function handleDropdownMenu() {
         <span class="hidden group-data-[sidebar-size=sm]:block">
           <img :src="logoSm" alt="" class="h-6 mx-auto" />
         </span>
-        <span class="group-data-[sidebar-size=sm]:hidden">
+        <!-- <span class="group-data-[sidebar-size=sm]:hidden">
           <img :src="logoDark" alt="" class="h-6 mx-auto" />
-        </span>
+        </span> -->
       </div>
       <div
         @click="onLogoClick"
