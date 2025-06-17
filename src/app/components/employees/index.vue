@@ -140,6 +140,9 @@ const handleCreateModal = () => {
   };
   addUserModal.value = true;
 };
+
+const user = JSON.parse(localStorage.getItem('user') || '{}');
+const userRoles = user?.roles || [];
 </script>
 
 <template>
@@ -160,7 +163,7 @@ const handleCreateModal = () => {
             class="inline-block size-4 absolute ltr:left-2.5 rtl:right-2.5 top-2.5 text-slate-500 dark:text-zink-200"
           />
         </div>
-        <TButton @click="handleCreateModal">
+        <TButton v-if="!userRoles.includes('technician')" @click="handleCreateModal">
           <Plus class="inline-block size-4" /> {{ t('e-add-employee') }}
         </TButton>
       </div>

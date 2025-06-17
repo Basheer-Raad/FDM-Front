@@ -3,7 +3,6 @@ import { ref, computed, onMounted } from "vue";
 import { Plus, Search, ChevronLeft, ChevronRight } from "lucide-vue-next";
 import CreateEditDialogAdmin from "./CreateEditDialogAdmin.vue";
 import { apiService } from "@/app/service/httpService/apiService";
-import { Pencil } from "lucide-vue-next";
 import { useI18n } from "vue-i18n";
 
 interface Todo {
@@ -129,7 +128,7 @@ const handleEditModal = (task) => {
     status: task.status,
     userId: task.user_id || task.userId,
     customer: task.customer?.id || task.customer,
-    mediaPath: task.mediaPath || "",
+    media: task.media || "",
     service: task.service || "",
     meters: task.meters || [],
     description: task.description || "",
@@ -231,21 +230,10 @@ const handleTaskSubmit = async (result) => {
               <template v-else-if="header.value === 'meterNo'">
                 {{ item.meters?.meterNo || "-" }}
               </template>
-              <!-- <template v-else-if="header.value === 'mediaPath'">
-                <img :src="item.mediaPath" alt="Media" class="w-10 h-10 rounded-full" />
-              </template> -->
               <template v-else>
                 {{ item[header.value] }}
               </template>
             </td>
-            <!-- <td class="px-3.5 py-2.5 text-center">
-              <button
-                @click="handleEditModal(item)"
-                class="text-blue-500 hover:text-blue-700"
-              >
-                <Pencil class="inline-block size-4" />
-              </button>
-            </td> -->
           </tr>
         </tbody>
       </table>

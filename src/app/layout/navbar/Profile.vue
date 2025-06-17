@@ -1,14 +1,24 @@
 <script lang="ts" setup>
 import userPng from "@/assets/images/users/user.png";
-import { User2, Mail, MessagesSquare, Gem, LogOut } from "lucide-vue-next";
-import { fakeBackendService } from "@/app/service/httpService/httpServiceProvider.ts";
+import { User2, LogOut } from "lucide-vue-next";
 import { useRouter } from "vue-router";
+import { ref, onMounted } from "vue";
+
 const router = useRouter();
+const user = ref<any>(null);
+
+onMounted(() => {
+  const userData = localStorage.getItem('user');
+  if (userData) {
+    user.value = JSON.parse(userData);
+  }
+});
+
 const onSignOut = () => {
   localStorage.removeItem('token');
+  localStorage.removeItem('user');
   router.push({ path: `/login` });
 };
-const user = fakeBackendService.getUser();
 </script>
 <template>
   <TMenu>
@@ -43,8 +53,8 @@ const user = fakeBackendService.getUser();
             ></span>
           </div>
           <div>
-            <h6 class="mb-1 text-15">{{ user.username }}</h6>
-            <!-- <p class="text-slate-500 dark:text-zink-300">{{ user.role }}</p> -->
+            <h6 class="mb-1 text-15">{{ user?.name || user?.email }}</h6>
+            <!-- <p class="text-slate-500 dark:text-zink-300">{{ user?.roles }}</p> -->
           </div>
         </a>
         <ul>

@@ -10,6 +10,7 @@ import { LAYOUTS } from "@/app/const";
 import { v4 as uuidv4 } from "uuid";
 import { MenuItemType, SubMenuType } from "@/app/layout/types";
 import { useI18n } from 'vue-i18n';
+import { fakeBackendService } from "@/app/service/httpService/httpServiceProvider.ts";
 
 const layoutStore = computed(() => useLayoutStore());
 const layoutType = computed(() => layoutStore.value.layoutType);
@@ -19,7 +20,15 @@ const path = computed(() => route.path);
 const onLogoClick = () => {
   router.push("/");
 };
-const mappedData: any = menuItems.map((item) => {
+const user = JSON.parse(localStorage.getItem('user') || '{}');
+const userRoles = user?.roles || [];
+
+const filteredMenuItems = menuItems.filter(item => {
+  if (item.role === 'admin' && !userRoles.includes('admin')) return false;
+  return true;
+});
+
+const mappedData: any = filteredMenuItems.map((item) => {
   if (item.subMenu) {
     const nestedSubMenu = item.subMenu.map((subMenu: SubMenuType) => {
       if (subMenu.subMenu) {
