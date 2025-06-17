@@ -22,7 +22,7 @@ const { t } = useI18n();
         </p>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <router-link
-            to="/tasks"
+            to="/admin-tasks"
             class="p-4 bg-slate-50 dark:bg-zink-500 rounded-lg hover:bg-slate-100 dark:hover:bg-zink-400 transition-colors"
           >
             <h3 class="font-medium mb-2">{{ t('welcome-tasks-title') }}</h3>

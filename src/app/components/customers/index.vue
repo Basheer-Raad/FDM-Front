@@ -116,7 +116,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <TCard id="userTable" class="mt-8">
+  <TCard id="userTable" class="mt-1">
     <div class="flex items-center gap-3 mb-4">
       <h6 class="text-15 grow">
         {{ t('c-customers') }} (<b>{{ userList.length }}</b

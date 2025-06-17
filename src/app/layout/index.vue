@@ -7,6 +7,10 @@ import { Settings } from "lucide-vue-next";
 import CustomizerDrawer from "@/app/layout/navbar/customizer/Drawer.vue";
 
 const customizerDrawer = ref(false);
+const menuOpen = ref(false);
+const openMenu = () => { menuOpen.value = true; };
+const closeMenu = () => { menuOpen.value = false; };
+
 onMounted(() => {
   setAttribute("class", "light scroll-smooth group");
   document.body.setAttribute(
@@ -39,8 +43,8 @@ onBeforeUnmount(() => {
 });
 </script>
 <template>
-  <NavBar />
-  <MenuComponent />
+  <NavBar :openMenu="openMenu" />
+  <MenuComponent :menuOpen="menuOpen" :closeMenu="closeMenu" />
   <div
     class="fixed items-center bottom-6 ltr:right-12 rtl:left-12 h-header z-[99] hidden group-data-[navbar=hidden]:flex"
   >
