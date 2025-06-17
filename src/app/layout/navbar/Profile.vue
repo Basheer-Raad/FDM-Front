@@ -2,8 +2,11 @@
 import userPng from "@/assets/images/users/user.png";
 import { User2, Mail, MessagesSquare, Gem, LogOut } from "lucide-vue-next";
 import { fakeBackendService } from "@/app/service/httpService/httpServiceProvider.ts";
+import { useRouter } from "vue-router";
+const router = useRouter();
 const onSignOut = () => {
-  fakeBackendService.removeUser();
+  localStorage.removeItem('token');
+  router.push({ path: `/login` });
 };
 const user = fakeBackendService.getUser();
 </script>

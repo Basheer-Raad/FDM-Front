@@ -12,6 +12,7 @@ const props = defineProps({
 });
 
 const onClick = () => {
+  localStorage.removeItem('token');
   router.push({ path: `/login/${props.layout}` });
 };
 </script>

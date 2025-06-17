@@ -32,11 +32,9 @@ router.beforeEach((to: any, from: any, next: any) => {
   } else {
     const auth = appConfigs.auth;
     if (auth === "fakebackend") {
-      const user = fakeBackendService.getUser();
-      const isUserLoggedIn = Object.keys(user).length > 0;
-      if (isAuthRequired && isUserLoggedIn) {
+      const token = localStorage.getItem('token');
+      if (isAuthRequired && token) {
         next();
-        
       } else {
         router.push("/login");
       }

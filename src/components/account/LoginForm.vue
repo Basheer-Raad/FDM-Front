@@ -1,15 +1,13 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
-import { socialMedias } from "@/components/authentication/utils.ts";
-import {
-  fakeBackendService,
-  firebaseService,
-} from "@/app/service/httpService/httpServiceProvider.ts";
+// import { socialMedias } from "@/components/authentication/utils.ts";
+import { apiService } from "@/app/service/httpService/apiService";
 import appConfigs from "@/app/appConfig.ts";
-import { UserType } from "@/app/service/httpService/types.ts";
+// import { UserType } from "@/app/service/httpService/types.ts";
 import { useRouter } from "vue-router";
 import { LAYOUT_TYPES } from "@/layouts/types.ts";
-import { Mail, Smartphone } from "lucide-vue-next";
+// import { Mail } from "lucide-vue-next";
+// import type { AxiosResponse } from 'axios';
 
 const { COVER, BOXED, MODERN } = LAYOUT_TYPES;
 const props = defineProps({
@@ -21,13 +19,9 @@ const props = defineProps({
 const router = useRouter();
 const auth = appConfigs.auth;
 
-const modernLoginType = ref("emailLogin");
-const tabClass = `inline-block px-4 w-full py-2 text-base transition-all duration-300 ease-linear rounded-md text-slate-500 bg-slate-100 dark:text-zink-200 dark:bg-zink-600 border border-transparent group-[.active]:bg-custom-500 dark:group-[.active]:bg-custom-500 group-[.active]:text-white dark:group-[.active]:text-white hover:text-custom-500 dark:hover:text-custom-500 active:text-custom-500 dark:active:text-custom-500 -mb-[1px]`;
-
 const form = ref({
-  username: { value: "admin", isValid: true },
+  email: { value: "admin@example.com", isValid: true },
   password: { value: "123456", isValid: true },
-  phone: { value: "", isValid: true },
   isRemember: true,
 });
 
@@ -36,8 +30,8 @@ const isSucceed = ref(false);
 const errorMsg = ref("");
 
 const isValidForm = computed(() => {
-  const { username, password, isRemember, phone } = form.value;
-  return username.isValid && password.isValid && isRemember && phone.isValid;
+  const { email, password, isRemember } = form.value;
+  return email.isValid && password.isValid && isRemember;
 });
 
 const getTitleColor = computed(() => {
@@ -46,29 +40,31 @@ const getTitleColor = computed(() => {
   }
   return "text-custom-500 dark:text-custom-500";
 });
+
+interface LoginResponse {
+  token: string;
+  user: {
+    id: number;
+    email: string;
+  };
+}
+
 const onSignIn = async () => {
   isSubmitted.value = true;
   errorMsg.value = "";
   if (isValidForm.value) {
     try {
-      const { password, username, phone } = form.value;
-      const payload: UserType = {
+      const { password, email } = form.value;
+      const payload = {
         password: password.value,
-        username: username.value,
-        phone: phone.value,
+        email: email.value,
       };
 
-      if (auth === "fakebackend") {
-        const data = await fakeBackendService.login(payload);
-        if (data) {
-          isSucceed.value = true;
-          router.push({ path: "/welcome" });
-        }
-      } else if (auth === "firebase") {
-        await firebaseService.loginUser({
-          ...payload,
-          email: payload.username,
-        });
+      const response = await apiService.post<LoginResponse>("login", payload);
+      if (response) {
+        localStorage.setItem('token', response.token);
+        isSucceed.value = true;
+        router.push({ path: "/" });
       }
     } catch (error: any) {
       errorMsg.value = error.message;
@@ -77,27 +73,12 @@ const onSignIn = async () => {
 };
 </script>
 <template>
-  <div v-if="layout === MODERN" class="lg:w-[20rem] mx-auto mt-10">
-    <TTabs
-      v-model="modernLoginType"
-      class="flex flex-wrap w-full gap-2 text-sm font-medium text-center nav-tabs"
-    >
-      <TTab grow value="emailLogin" :tabClass="tabClass">
-        <Mail class="inline-block size-4 mr-1" />
-        Email
-      </TTab>
-      <TTab grow value="phoneLogin" :tabClass="tabClass">
-        <Smartphone class="inline-block size-4 mr-1" />
-        Phone
-      </TTab>
-    </TTabs>
-  </div>
-  <div v-else class="text-center">
+  <div class="text-center">
     <h4 class="mb-1" :class="getTitleColor">Welcome Larsatron</h4>
     <p class="text-slate-500 dark:text-zink-200">Sign in to continue to FDM.</p>
   </div>
 
-  <div :class="layout === MODERN ? 'lg:w-[25rem] mx-auto' : ''" class="mt-10">
+  <div class="mt-10">
     <div
       v-show="isSucceed"
       class="px-4 py-3 mb-3 text-sm text-green-500 border border-green-200 rounded-md bg-green-50 dark:bg-green-400/20 dark:border-green-500/50"
@@ -109,21 +90,11 @@ const onSignIn = async () => {
     </TAlert>
     <div>
       <TValidationInputField
-        v-if="modernLoginType === 'emailLogin'"
-        v-model="form.username"
-        label="UserName/ Email ID"
-        :rules="['required']"
+        v-model="form.email"
+        label="Email"
+        :rules="['required', 'email']"
         :submit="isSubmitted"
-        placeholder="Enter username or email"
-      />
-      <TValidationInputField
-        v-else
-        v-model="form.phone"
-        type="number"
-        label="Phone Number"
-        :rules="['required']"
-        :submit="isSubmitted"
-        placeholder="Enter Phone"
+        placeholder="Enter your email"
       />
       <TValidationInputField
         v-model="form.password"
