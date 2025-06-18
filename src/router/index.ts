@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { routes } from "@/router/routes.ts";
 import appConfigs from "@/app/appConfig.ts";
-import { fakeBackendService } from "@/app/service/httpService/httpServiceProvider.ts";
+
 
 const router = createRouter({
   history: createWebHistory('/tailwick/vue/h-dark'),

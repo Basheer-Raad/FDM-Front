@@ -18,7 +18,7 @@ interface Todo {
     name: string;
     email: string;
   };
-  mediaPath: string;
+  media: string;
   service: string;
   meters?: {
     meterNo: string;
@@ -59,7 +59,7 @@ const event = ref({
   userId: 0,
   status: "pending",
   customer: [],
-  mediaPath: "",
+      media: "",
   service: "",
   meters: [],
   description: "",
@@ -117,7 +117,7 @@ const handleEditModal = (task) => {
     status: task.status,
     user_id: task.user_id || task.userId,
     customer: task.customer?.id || task.customer,
-    mediaPath: task.mediaPath || "",
+    media: task.media || "",
     service: task.service || "",
     meters: task.meters || "",
     description: task.description || "",

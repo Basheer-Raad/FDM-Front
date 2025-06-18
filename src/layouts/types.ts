@@ -4,3 +4,11 @@ export const LAYOUT_TYPES = {
   BOXED: "boxed",
   MODERN: "modern"
 };
+
+export type MenuItemType = {
+  icon?: any;
+  title: string;
+  path?: string;
+  isHeader?: boolean;
+  role?: string;
+};

@@ -6,6 +6,10 @@ import appConfigs from "@/app/appConfig.ts";
 // import { UserType } from "@/app/service/httpService/types.ts";
 import { useRouter } from "vue-router";
 import { LAYOUT_TYPES } from "@/layouts/types.ts";
+import logoDarkMain from "@/assets/images/Larsatron_Logo-Eng-light.png";
+import logoLight from "@/assets/images/Larsatron_Logo-Eng.png";
+import { useLayoutStore } from "@/store/layout";
+import { useAuthStore } from "@/store/auth";
 // import { Mail } from "lucide-vue-next";
 // import type { AxiosResponse } from 'axios';
 
@@ -18,6 +22,7 @@ const props = defineProps({
 });
 const router = useRouter();
 const auth = appConfigs.auth;
+const authStore = useAuthStore();
 
 const form = ref({
   email: { value: "admin@example.com", isValid: true },
@@ -45,9 +50,15 @@ interface LoginResponse {
   token: string;
   user: {
     id: number;
+    name: string;
     email: string;
+    roles: string[];
   };
 }
+
+const layoutStore = computed(() => useLayoutStore());
+const siteMode = computed(() => layoutStore.value.mode);
+const logoMain = computed(() => siteMode.value === 'dark' ? logoDarkMain : logoLight);
 
 const onSignIn = async () => {
   isSubmitted.value = true;
@@ -63,6 +74,7 @@ const onSignIn = async () => {
       const response = await apiService.post<LoginResponse>("login", payload);
       if (response) {
         localStorage.setItem('token', response.token);
+        authStore.setUserRole(JSON.stringify(response.user.roles[0]));
         isSucceed.value = true;
         router.push({ path: "/" });
       }
@@ -74,6 +86,7 @@ const onSignIn = async () => {
 </script>
 <template>
   <div class="text-center">
+    <img :src="logoMain" alt="Logo" class="h-10 mx-auto mb-6" />
     <h4 class="mb-1" :class="getTitleColor">Welcome Larsatron</h4>
     <p class="text-slate-500 dark:text-zink-200">Sign in to continue to FDM.</p>
   </div>

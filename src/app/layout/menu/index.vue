@@ -2,7 +2,7 @@
 import { computed, ref, onMounted, watch, onBeforeUnmount } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { logoDark, logoLight, logoSm } from "@/assets/images/utils";
-import { menuItems } from "@/app/layout/utils";
+import { getMenuItems } from "@/app/layout/utils";
 import SubMenu from "@/app/layout/menu/SubMenu.vue";
 import { useLayoutStore } from "@/store/layout";
 import { LucideNetwork, X } from "lucide-vue-next";
@@ -10,6 +10,7 @@ import { LAYOUTS } from "@/app/const";
 import { v4 as uuidv4 } from "uuid";
 import { MenuItemType, SubMenuType } from "@/app/layout/types";
 import { useI18n } from 'vue-i18n';
+import { fakeBackendService } from "@/app/service/httpService/httpServiceProvider.ts";
 
 const layoutStore = computed(() => useLayoutStore());
 const layoutType = computed(() => layoutStore.value.layoutType);
@@ -19,7 +20,12 @@ const path = computed(() => route.path);
 const onLogoClick = () => {
   router.push("/");
 };
-const mappedData: any = menuItems.map((item) => {
+const user = JSON.parse(localStorage.getItem('user') || '{}');
+const userRoles = user?.roles || [];
+
+const menuItems = getMenuItems;
+
+const mappedData: any = computed(() => menuItems.value.map((item) => {
   if (item.subMenu) {
     const nestedSubMenu = item.subMenu.map((subMenu: SubMenuType) => {
       if (subMenu.subMenu) {
@@ -44,8 +50,9 @@ const mappedData: any = menuItems.map((item) => {
     ...item,
     id: uuidv4()
   };
-});
-const menuItemData = ref<MenuItemType[]>(mappedData);
+}));
+
+const menuItemData = computed(() => mappedData.value);
 const toggleActivation = (menuItemId: string) => {
   menuItemData.value = menuItemData.value.map((item: MenuItemType) => {
     if (item.id === menuItemId) {
