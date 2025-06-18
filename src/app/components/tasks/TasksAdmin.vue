@@ -17,7 +17,7 @@ interface Todo {
     name: string;
     email: string;
   };
-  mediaPath: string;
+  media: string;
   service: string;
   meters: { meterNo: string }[];
 }
@@ -56,7 +56,7 @@ const event = ref({
   userId: 0,
   status: "pending",
   customer: [],
-  mediaPath: "",
+      media: "",
   service: "",
 });
 

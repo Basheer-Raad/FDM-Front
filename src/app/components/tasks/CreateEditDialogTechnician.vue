@@ -24,7 +24,7 @@ const props = defineProps({
       status: "pending",
       user_id: "",
       customer: null,
-      mediaPath: "",
+      media: "",
       service: "",
       meters: null,
       description: "",
@@ -46,7 +46,7 @@ interface TodoFormData {
   status: any;
   user_id: any;
   customer: any;
-  mediaPath: any;
+  media: any;
   service: any;
   meters: any;
   description: any;
@@ -56,7 +56,7 @@ const todoData = ref<TodoFormData>({
   todo: props.event.todo || "",
   ...props.event,
   customer: props.event.customer || null,
-  mediaPath: props.event.mediaPath || "",
+  media: props.event.media || "",
   service: props.event.service || "",
   meters: props.event.meters || "",
   description: props.event.description || "",
@@ -89,7 +89,7 @@ watch(
       meters: meterObj,
       service: newVal.service || "",
       description: newVal.description || "",
-      mediaPath: newVal.mediaPath || "",
+      media: newVal.media || "",
     };
   },
   { immediate: true }
