@@ -9,6 +9,7 @@ import { LAYOUT_TYPES } from "@/layouts/types.ts";
 import logoDarkMain from "@/assets/images/Larsatron_Logo-Eng-light.png";
 import logoLight from "@/assets/images/Larsatron_Logo-Eng.png";
 import { useLayoutStore } from "@/store/layout";
+import { useAuthStore } from "@/store/auth";
 // import { Mail } from "lucide-vue-next";
 // import type { AxiosResponse } from 'axios';
 
@@ -21,6 +22,7 @@ const props = defineProps({
 });
 const router = useRouter();
 const auth = appConfigs.auth;
+const authStore = useAuthStore();
 
 const form = ref({
   email: { value: "admin@example.com", isValid: true },
@@ -72,7 +74,7 @@ const onSignIn = async () => {
       const response = await apiService.post<LoginResponse>("login", payload);
       if (response) {
         localStorage.setItem('token', response.token);
-        localStorage.setItem('role', JSON.stringify(response.user.roles[0]));
+        authStore.setUserRole(JSON.stringify(response.user.roles[0]));
         isSucceed.value = true;
         router.push({ path: "/" });
       }

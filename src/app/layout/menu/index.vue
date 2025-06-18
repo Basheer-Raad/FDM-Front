@@ -2,7 +2,7 @@
 import { computed, ref, onMounted, watch, onBeforeUnmount } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { logoDark, logoLight, logoSm } from "@/assets/images/utils";
-import { menuItems } from "@/app/layout/utils";
+import { getMenuItems } from "@/app/layout/utils";
 import SubMenu from "@/app/layout/menu/SubMenu.vue";
 import { useLayoutStore } from "@/store/layout";
 import { LucideNetwork, X } from "lucide-vue-next";
@@ -23,12 +23,9 @@ const onLogoClick = () => {
 const user = JSON.parse(localStorage.getItem('user') || '{}');
 const userRoles = user?.roles || [];
 
-const filteredMenuItems = menuItems.filter(item => {
-  if (item.role === 'admin' && !userRoles.includes('admin')) return false;
-  return true;
-});
+const menuItems = getMenuItems;
 
-const mappedData: any = filteredMenuItems.map((item) => {
+const mappedData: any = computed(() => menuItems.value.map((item) => {
   if (item.subMenu) {
     const nestedSubMenu = item.subMenu.map((subMenu: SubMenuType) => {
       if (subMenu.subMenu) {
@@ -53,8 +50,9 @@ const mappedData: any = filteredMenuItems.map((item) => {
     ...item,
     id: uuidv4()
   };
-});
-const menuItemData = ref<MenuItemType[]>(mappedData);
+}));
+
+const menuItemData = computed(() => mappedData.value);
 const toggleActivation = (menuItemId: string) => {
   menuItemData.value = menuItemData.value.map((item: MenuItemType) => {
     if (item.id === menuItemId) {
