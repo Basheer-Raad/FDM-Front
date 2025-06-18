@@ -50,6 +50,7 @@ interface LoginResponse {
     id: number;
     name: string;
     email: string;
+    roles: string[];
   };
 }
 
@@ -71,6 +72,7 @@ const onSignIn = async () => {
       const response = await apiService.post<LoginResponse>("login", payload);
       if (response) {
         localStorage.setItem('token', response.token);
+        localStorage.setItem('role', JSON.stringify(response.user.roles[0]));
         isSucceed.value = true;
         router.push({ path: "/" });
       }
