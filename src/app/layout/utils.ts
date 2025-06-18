@@ -25,6 +25,8 @@ import {
 } from "lucide-vue-next";
 import { MenuItemType } from "@/app/layout/types";
 
+const userRole = localStorage.getItem('role');
+
 export const menuItems: MenuItemType[] = [
   { isHeader: true, title: "menu" },
   {
@@ -32,11 +34,11 @@ export const menuItems: MenuItemType[] = [
     title: "welcome",
     path: "/",
   },
-  {
+  ...(userRole !== '"technician"' ? [{
     icon: Table,
     title: "admin-tasks",
     path: "/admin-tasks",
-  },
+  }] : []),
   {
     icon: Table,
     title: "technician-tasks",

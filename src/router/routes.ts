@@ -1637,7 +1637,8 @@ export const routes = [
     meta: {
       title: "Admin Tasks",
       authRequired: true,
-      layout: DefaultLayout
+      layout: DefaultLayout,
+      allowedRoles: ['admin']
     }
   },
   {
