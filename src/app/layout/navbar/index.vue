@@ -41,6 +41,14 @@ const activeMenuClass = computed(() => {
   }
   return 'bg-green-100 text-green-700';
 });
+
+const user = JSON.parse(localStorage.getItem('user') || '{}');
+const userRoles = user?.roles || [];
+
+const filteredMenuItems = menuItems.filter(item => {
+  if (item.role === 'admin' && !userRoles.includes('admin')) return false;
+  return true;
+});
 </script>
 <template>
   <header id="page-topbar" class="fixed right-0 z-[1000] left-0 print:hidden transition-all ease-linear duration-300" :class="navClass">
@@ -55,7 +63,7 @@ const activeMenuClass = computed(() => {
           </router-link>
           <!-- Main navigation tabs -->
           <nav class="hidden md:flex gap-2 ltr:ml-6 rtl:mr-6">
-            <template v-for="item in menuItems" :key="item.title">
+            <template v-for="item in filteredMenuItems" :key="item.title">
               <router-link
                 v-if="!item.isHeader && item.path"
                 :to="item.path"

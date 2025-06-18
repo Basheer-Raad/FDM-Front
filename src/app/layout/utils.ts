@@ -1,26 +1,7 @@
 import {
   MonitorDot,
   Users,
-  // PictureInPicture2,
-  // MessagesSquare,
-  // Mail,
-  // CalendarDays,
-  // ShoppingBag,
-  // CircuitBoard,
-  // ScrollText,
-  // RadioTower,
-  // FileText,
-  // User2,
-  // Award,
-  // Codesandbox,
-  // LifeBuoy,
-  // PackagePlus,
-  // LocateFixed,
   Table,
-  // PieChart,
-  // Trophy,
-  // Map,
-  // Share2
   Diameter
 } from "lucide-vue-next";
 import { MenuItemType } from "@/app/layout/types";

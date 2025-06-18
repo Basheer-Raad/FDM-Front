@@ -283,6 +283,13 @@
   "t-edit-todo": "Edit Todo",
   "t-create-todo": "Create Todo",
   "t-description": "Description",
-  "t-enter-description": "Enter description..."
+  "t-enter-description": "Enter description...",
+  "e-created-at": "Created At",
+  "e-updated-at": "Updated At",
+  "e-action": "Action",
+  "e-edit": "Edit",
+  "e-delete": "Delete",
+  "e-view": "View"
+  
 
 }

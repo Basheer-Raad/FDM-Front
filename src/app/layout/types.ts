@@ -16,4 +16,5 @@ export interface MenuItemType {
   path?: string;
   isActive?: boolean;
   subMenu?: SubMenuType[];
+  role?: string;
 }
